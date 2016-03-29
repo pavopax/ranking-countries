@@ -6,70 +6,83 @@ from urlparse import urljoin
 import re
 import warnings
 
+
 def dl_data(url):
     print "Downloading data..."
     r = requests.get(url)
     print "Done."
     return r
 
+
 def get_country_info(item):
     name = item.text
     url = item['href']
     return CountryStore(name=name, url=url)
 
+
 def get_countries(raw):
-    soup = BeautifulSoup(raw.text)
+    soup = BeautifulSoup(raw.text, "html.parser")
     divs = soup.find_all('div', attrs={'class': 'small-12 column'})
-    p = divs[1].select('p')[0]      # only one exists
+    p = divs[1].select('p')[0]
     return [get_country_info(c) for c in p.select('a') if get_country_info(c) is not None]
 
 
-def get_attr(item):
+def get_subrank_info(item):
     name = item.text
     url = item['href']
     return name, url
 
 
-def fixit(text):
-    t = text.strip()
-    t = t.replace("(", "")
+def tofloat(text):
+    t = text.strip().replace("(", "")
     try:
         float(t)
         return float(t)
     except ValueError:
         warnings.warn("Warning: Did not get a float where needed.")
         return False
+
     
 def get_attributes(raw):
-    soup = BeautifulSoup(raw.text)
+    soup = BeautifulSoup(raw.text, "html.parser")
     div = soup.select('span#docs-internal-guid-c27701e2-0e7e-7a4a-d5bd-469d49804385')
-    aa = div[0].find_all('a')
-    # extract percent values of weights
-    x = re.findall('<b>(\S?\d+\.\d+ )percent\S?<\/b>', str(div))
-    print x
+    # name, url:
+    alinks = div[0].find_all('a')
+    # weights:
+    wts = re.findall('<b>(\S?\d+\.\d+ )percent\S?<\/b>', str(div))
+    # lists of attributes:
+    aa = div[0].find_all('span')
+    la = []
+    for i in range(len(aa)):
+        if i % 3 ==0:
+            t = aa[i].text.replace(u"\xa0", "").replace("<span>", "")
+            t = t.replace("): ", "")
+            la.append([t.split(", ")])
+    # COMBINE:
     res = []
-    for i in range(len(x)):
-        x[i] = fixit(x[i])
-        name, url = get_attr(aa[i])
-        res.append(AttributeStore(subranking=name, url=url, weight=x[i]))
+    for i in range(len(wts)):
+        wts[i] = tofloat(wts[i])
+        name, url = get_subrank_info(alinks[i])
+        # last one manually (:
+        if i == len(wts)-1:
+            la.append(["a good job market, affordable, economically stable, family friendly, income equality, politically stable, safe, well-developed public education system, well-developed public health system".split(", ")])
+        res.append(AttributeStore(subranking=name, url=url, weight=wts[i], attributes=la[i]))
     return res
+
 
 BASEURL = "http://www.usnews.com"
 
-CountryStore = namedtuple("CountryStore", 'name, url')
-
 post1 = "/news/best-countries/data-explorer"
 r1 = dl_data(urljoin(BASEURL, post1))
-countries = get_countries(r1)
-# print len(country_info) # 60
-
-
-#AttributeStore = namedtuple("AttributeStore", 'subranking, url, weight, attributes')
-AttributeStore = namedtuple("AttributeStore", 'subranking, url, weight')
-
 post2= "/news/best-countries/articles/methodology"
 r2 = dl_data(urljoin(BASEURL, post2))
+
+CountryStore = namedtuple("CountryStore", 'name, url')
+countries = get_countries(r1)
+print "Found %i countries." % len(countries) # 60
+
+AttributeStore = namedtuple("AttributeStore", 'subranking, url, weight, attributes')
 attributes = get_attributes(r2)
-print len(attributes)  # 9
+print "Found %i subrankings." % len(attributes)  # 9
 
 
