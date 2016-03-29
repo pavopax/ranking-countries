@@ -27,7 +27,8 @@ def get_countries(raw):
 def get_attr(item):
     name = item.text
     url = item['href']
-    return AttributeStore(subranking=name, url=url)
+    return name, url
+
 
 def fixit(text):
     t = text.strip()
@@ -46,9 +47,12 @@ def get_attributes(raw):
     # extract percent values of weights
     x = re.findall('<b>(\S?\d+\.\d+ )percent\S?<\/b>', str(div))
     print x
-    x = [fixit(t) for t in x]
-    print x
-    return [get_attr(attr) for attr in aa if get_attr(attr) is not None]
+    res = []
+    for i in range(len(x)):
+        x[i] = fixit(x[i])
+        name, url = get_attr(aa[i])
+        res.append(AttributeStore(subranking=name, url=url, weight=x[i]))
+    return res
 
 BASEURL = "http://www.usnews.com"
 
@@ -61,7 +65,7 @@ countries = get_countries(r1)
 
 
 #AttributeStore = namedtuple("AttributeStore", 'subranking, url, weight, attributes')
-AttributeStore = namedtuple("AttributeStore", 'subranking, url')
+AttributeStore = namedtuple("AttributeStore", 'subranking, url, weight')
 
 post2= "/news/best-countries/articles/methodology"
 r2 = dl_data(urljoin(BASEURL, post2))
