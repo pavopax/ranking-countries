@@ -4,58 +4,28 @@ Paul Paczuski [pavopax.com]   [AMA!]
 
 Quick Start
 ===============================================================================
-NOTE: HEROKU APP is a separate repo!
 
-web app:
+the web app (working) is at:
 
 http://indicated.herokuapp.com
 
-
-http://data.worldbank.org
+The inspiration was:
 
 http://www.usnews.com/news/best-countries
 
+My data is from:
 
-Some data error: Romania is abbreviated variously as ROM or ROU, so
-have to be careful when merging.
+http://data.worldbank.org
 
-Contents [WORKING] 
+
+
+Contents of this file
 ===============================================================================
 * USNWR - methodology notes
 * Q3 - project idea - description
 * Sources
 * Programs
 
-
-My new Heroku app
-===============================================================================
-
-see index.html for deatils
-
-
-
-
-
-
-
-
-
-## methodology notes  
-> http://www.govexec.com/excellence/promising-practices/2016/01/germany-one-ranking-worlds-best-country/125272/
-
-
-This is based on new research that aggregates 75 scores for everything
-from culture to business and regulation, and much else besides. And to
-be fair, the research is based on a global survey of some 16,000
-people, asking them about their perceptions of a host of
-countries. The inaugural survey was conducted by ad agency WPP, the
-Wharton business school, and US News & World Report.
-
-WPP led the survey, using a similar methodology to the one it employs
-to measure consumers’ perception of company brands. Countries, like
-companies, should think carefully about cultivating their brands, it
-argues. This, in turn, will generate returns via foreign trade,
-investment, and the like.
 
 
 
@@ -79,6 +49,28 @@ USNWR - methodology notes
 
 scores standardized to 100 for top country
 
+## methodology notes  
+> http://www.govexec.com/excellence/promising-practices/2016/01/germany-one-ranking-worlds-best-country/125272/
+
+
+This is based on new research that aggregates 75 scores for everything
+from culture to business and regulation, and much else besides. And to
+be fair, the research is based on a global survey of some 16,000
+people, asking them about their perceptions of a host of
+countries. The inaugural survey was conducted by ad agency WPP, the
+Wharton business school, and US News & World Report.
+
+WPP led the survey, using a similar methodology to the one it employs
+to measure consumers’ perception of company brands. Countries, like
+companies, should think carefully about cultivating their brands, it
+argues. This, in turn, will generate returns via foreign trade,
+investment, and the like.
+
+
+## notes
+
+Some data error: Romania is abbreviated variously as ROM or ROU, so
+have to be careful when merging.
 
 
 
