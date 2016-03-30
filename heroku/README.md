@@ -1,6 +1,5 @@
 # Ranking countries [working]
 
-
 Quick Start
 ===============================================================================
 application is at [http:/indicated.herokuapp.com](http://indicated.herokuapp.com)

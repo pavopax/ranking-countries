@@ -93,8 +93,10 @@ print dfc.head()
 dfa = pd.DataFrame.from_records(attributes, columns=AttributeStore._fields)
 print dfa
 
-outfile = open("countries.pickle", "wb")
+outfile = open("../../data/countries.pickle", "wb")
 pickle.dump(dfc, outfile)
+outfile.close()
 
-outfile = open("attributes.pickle", "wb")
+outfile = open("../../data/attributes.pickle", "wb")
 pickle.dump(dfa, outfile)
+outfile.close()
