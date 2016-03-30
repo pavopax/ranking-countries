@@ -30,7 +30,7 @@ usnews <- gsub("South Korea", "Korea, Rep.", usnews0) %>%
 
 
 ## munge country metadata
-df_meta <- df_meta0 %>% select(X...Country.Name, Region) %>%
+df_meta <- df_meta0 %>% select(X...Country.Name, Country.Code, Region) %>%
     rename(Country.Name=X...Country.Name)
 
 dfff <- left_join(dfinput0, df_meta, by="Country.Name") %>%

@@ -3,6 +3,8 @@ Paull Paczuski [pavopax.com]   [AMA!]
 
 Quick Start
 ===============================================================================
+NOTE: HEROKU APP is a separate repo!
+
 web app:
 
 http://indicated.herokuapp.com
