@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+	
+	<h2>Data Explorer</h2>
+	
+	{% for message in form.title.errors %}
+        <div>{{ message }}</div><br><br>
+	{% endfor %}
+	
+	
+	<form id='indicator_form' method='post' action='explorer' >
+            <fieldset>
+		<legend>Plot some indicators from the World Bank.</legend>
+		{{ form.hidden_tag() }}
+		
+		<b><i>NOTE: select distinct indicators. Otherwise, you will get an error.</i></b><br><br>
+		<div style = font-size:20px; font-weight:bold; margin-left:150px;>
+		    {{ form.indicator1.label }}<br>
+		    {{ form.indicator1 }}
+		    <br>
+		    {{ form.indicator2.label }}<br>
+		    {{ form.indicator2 }}
+		    <br>
+		    {{ form.title.label }}<br>
+		    {{ form.title }}
+		    <br><br>
+		    {{ form.submit }}
+		</div>
+		
+            </fieldset>
+	</form>
+	
+
+
+	{% endblock %}

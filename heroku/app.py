@@ -1,0 +1,168 @@
+import os
+import wbdata
+import time
+import datetime
+import pandas
+import numpy as np
+
+from flask import Flask, render_template, send_from_directory, request, redirect, flash
+from bokeh.plotting import figure
+from bokeh.embed import components
+
+from forms import IndicatorForm
+
+# initialization
+app = Flask(__name__)
+app.config.update(
+    DEBUG=True,
+)
+
+
+# for csrf stuff (?) 
+app.secret_key = 'development key'
+
+app.vars={}
+
+
+# controllers
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'ico/favicon.ico')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+# lead main page to index
+@app.route('/')
+def main():
+  return redirect('/index')
+
+
+@app.route("/index")
+def index():
+    return render_template('index.html')
+
+
+
+@app.route('/explorer', methods = ['GET', 'POST'])
+def explorer():
+    form = IndicatorForm()
+   
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All fields are required.')
+            return render_template('explorer.html', form = form)
+        else:
+            app.vars['i1'] = request.form['indicator1']
+            app.vars['i2'] = request.form['indicator2']
+            app.vars['title'] = request.form['title']
+            return redirect('/graph')
+    elif request.method == 'GET':
+        return render_template('explorer.html', form = form)
+
+
+# @app.route('/explorer', methods = ['GET', 'POST'])
+# def contact():
+#     form = IndicatorForm()
+   
+#     if request.method == 'POST':
+#         if form.validate() == False:
+#             flash('All fields are required.')
+#             return render_template('explorer.html', form = form)
+#         else:
+#             return redirect('/graph')
+#     elif request.method == 'GET':
+#         return render_template('explorer.html', form = form)
+
+
+# @app.route("/explorer", methods=['GET', 'POST'])
+# def explorer():
+#     if request.method=='GET':
+#         return render_template('explorer.html')
+#     else:
+#         app.vars['ix'] = request.form['indicator']
+#         return redirect('/graph')
+
+# @app.route("/explorer", methods=['GET', 'POST'])
+# def explorer():
+#     if request.method=='GET':
+#         return render_template('explorer.html')
+#     else:
+#         app.vars['ix'] = request.form['indicator']
+#         return redirect('/graph')
+
+
+@app.route('/graph')
+def graph():
+
+    ## TODO: automate this.
+    ## select USN's top 60 countries (scraping is DONE)
+    countries = ["ARG", "AUS", "AUT", "AZE", "BGR", "BOL", "BRA", "CAN", "CHL", "CHN", "COL", "CRI", "CZE", "DEU", "DNK", "DOM", "DZA", "EGY", "ESP", "FRA", "GBR", "GRC", "GTM", "HUN", "IDN", "IND", "IRL", "IRN", "ISR", "ITA", "JOR", "JPN", "KAZ", "KOR", "LKA", "LUX", "MAR", "MEX", "MYS", "NGA", "NLD", "NZL", "PAK", "PAN", "PER", "PHL", "PRT", "ROU", "RUS", "SAU", "SGP", "SWE", "THA", "TUN", "TUR", "UKR", "URY", "USA", "VNM", "ZAF"]
+
+    # set up the indicator I want
+    # (just build up the dict if you want more than one)
+    oldindicators = {'NY.GDP.PCAP.CD': 'GDP per capita',
+                  'SI.POV.GINI':'GINI',
+                  'AG.LND.TOTL.K2':'Land Area'}
+
+    ind1 = app.vars['i1']
+    ind2 = app.vars['i2']
+    #landarea = 'AG.LND.TOTL.K2'
+    keys = [ind1] + [ind2] 
+    vals = [ind1] + [ind2] 
+
+    indicators = dict(zip(keys, vals))
+ 
+    #TODO edit date. using some recent date for now
+    dates = datetime.datetime(2001, 1, 1, 0, 0)
+
+    df0 = wbdata.get_dataframe(indicators, country=countries, data_date=dates,
+                           convert_date=False)
+
+    # standardize the 2 indicators, but transform the land area (3rd column)
+    df1 = df0.ix[:,0:2].apply(lambda x: (x - np.min(x)) /(np.max(x)-np.min(x)))
+    # df2 = df0.ix[:,2]
+    # df2 = 5*np.log(df2)/((np.log(df2.max()))-(np.log(df2.min())+5)).astype(
+    #     np.float64)
+
+    df = df1
+    # TODO: use HoverTools (SEE ipy nb)
+    ptitle=str(df.columns[1]) + " vs. " + str(
+        df.columns[0]) +" (standardized values)"
+    p = figure(width=700, height=500, title = app.vars['title'],
+               x_axis_label = df.columns[1], y_axis_label = df.columns[0])
+    p.circle(x=df[df.columns[1]], y=df[df.columns[0]],
+             size=10, color="navy", alpha=0.5)
+
+    script, div = components(p)
+    return render_template('graph.html', script=script, div=div,
+                           i1=ind1,i2 = ind2)
+
+
+@app.route("/history")
+def history():
+    return render_template('history.html')
+
+
+@app.route("/week1")
+def week1():
+    return render_template('week1.html')
+
+
+# launch
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+
+    
+
+
+
+
+
+
+

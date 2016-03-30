@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+
+<h1>Ranking Countries: Data Explorer [Preview]</h1>
+
+<p><i>Jump to:</i> &nbsp;&nbsp;<a href="#details">[Data]</a> &nbsp;&nbsp;&nbsp;<a href="#toolkit">[Toolkit]</a></p>
+
+<p>We're all familiar with various rankings of the world's universities. Recently, however, US News and World Report went a step further with <a href="http://www.usnews.com/news/best-countries/overall-full-list" target="_blank">a ranking of the world's countries</a>. Partly in order to investigate their methodology, I will create my own ranking using publicly accessible data.</p>
+<p>On this page, we look into two measures that were part of the ranking: GDP per capita and income equality. The plot shows data for the top 60 "Best Countries" according to US News (to filter, click or double-click on the region labels in the top right).</p>
+
+<div id="thisplot">
+<svg width="750" height="500"
+  viewBox="0 0 745 500"
+  preserveAspectRatio="xMidYMid meet">
+</svg>
+</div>
+
+<br><p>
+
+	For an interesting comparison, select only "Latin America & Caribbean" and "Europe and Central Asia."  <a href="#details">Details on the data are below.</a></p>
+
+<p>The above plot shows data from the <a href="http://datacatalog.worldbank.org" target="_blank">World Bank</a>. US News, however, used <i>survey</i> data which measures people's perceptions (<a href="http://www.usnews.com/news/best-countries/articles/methodology" target="_blank">full methodology here</a>), and Denmark came out on top in terms of income equality. See the below image (click it to open US News' data explorer, modify the axes, and then compare and contrast it to the plot above). There are similarities, but also some interesting differences, including that many countries are actually much more equal than is perceived.</p>
+
+<a href="http://www.usnews.com/news/best-countries/data-explorer" target="_blank"><img src="{{ url_for('static', filename='img/us-news.png')}}" class="img-responsive" alt="Responsive image"></a>
+
+
+<div id="details">
+	<h2>Data Details</h2>
+	<p>The ranking from US News had 60 "best" countries. These were selected for my plot above. GDP per capita is from 2010, while the GINI index is the most recent available. Both came from the <a href="http://datacatalog.worldbank.org" target="_blank">World Bank</a>. Five of the 60 countries did not have the GINI index data in the World Bank database for any of the past 20 years (Algeria, New Zealand, Saudi Arabia, Singapore, South Korea), and were excluded. Also, to match the orientation of the US News plot, the GINI index is reversed (100-x) in the top plot.</p>
+	<h2>Definitions, from the World Bank</h2>
+	<p><b>GINI index (World Bank estimate)</b>: Gini index measures the extent to which the distribution of income (or, in some cases, consumption expenditure) among individuals or households within an economy deviates from a perfectly equal distribution. A Lorenz curve plots the cumulative percentages of total income received against the cumulative number of recipients, starting with the poorest individual or household. The Gini index measures the area between the Lorenz curve and a hypothetical line of absolute equality, expressed as a percentage of the maximum area under the line. Thus a Gini index of 0 represents perfect equality, while an index of 100 implies perfect inequality.</p>
+
+	<p><b>GDP per capita (current US$)</b>: GDP per capita is gross domestic product divided by midyear population. GDP is the sum of gross value added by all resident producers in the economy plus any product taxes and minus any subsidies not included in the value of the products. It is calculated without making deductions for depreciation of fabricated assets or for depletion and degradation of natural resources. Data are in current U.S. dollars.</p>
+</div>
+
+
+<div id="notes">
+	<h2>Other Notes</h2>
+	<p>One of the project aims is to compare and contrast perception (US News survey data) with measured statistics (World Bank, other data), and perform analyses to determine sensitivity of the various measurements. For example, US News seemed to use unadjusted GDP per capita, while adjusting it for <a href="http://www.investopedia.com/terms/p/ppp.asp" target="_blank">purchasing power</a> may be better.</p>
+	<p>The project will feature customizable rankings via adjustable weighting of the attributes, so that anyone can find their own "best country."</p>
+</div>
+
+<div id="toolkit">
+	<h2>Toolkit</h2>
+	<p>Data munging was done with R. The plot was done in D3 and is based on a template from <a href="https://github.com/novus/nvd3" target="_blank">NVD3</a>. Page styling was done with <a href="http://getbootstrap.com" target="_blank">Bootstrap</a> (plus some minor CSS and HTML tweaks - Safari console debugger was very useful!). Everything was packaged together with <a href="http://flask.pocoo.org" target="_blank">Flask</a> and deployed on <a href="http://heroku.com" target="_blank">Heroku</a>. <a href="{{ url_for('static', filename='ico/favicon.ico') }}" target="_blank">Favicon</a> is my own, created on <a href="https://www.fiftythree.com" target="_blank">Paper for iOS</a> and converted with <a href="http://www.favicon.cc/" target="_blank">favicon.cc</a></p>
+
+</div>
+
+<!-- the <plot> script follows: -->
+<script>
+
+/* load data */
+d3.csv("{{ url_for('static', filename='data/2-gdp-vs-gini.csv')}}", function(error, csv_data){
+	console.log(csv_data)
+		var nested_data = d3.nest()
+			.key(function(d) { return d.group;; })
+			.entries(csv_data);
+
+	
+
+
+nv.addGraph(function() {
+	var chart = nv.models.scatterChart()
+                .showDistX(true) 
+                .showDistY(true)
+		.forceX([35, 85])
+		.forceY([0,110000])
+		.useVoronoi(true)
+		.duration(5500)
+	        .color(d3.scale.category10().range());
+
+	//Axis settings
+	chart.yAxis.axisLabel('GDP per capita ($)').axisLabelDistance(10);
+	chart.xAxis.axisLabel('GINI index inverse (higher = more income equality)').axisLabelDistance(1);
+
+	chart.xAxis.tickFormat(d3.format('2f'));
+	chart.yAxis.tickFormat(d3.format('2,0f'));
+
+	//circle size
+	chart.pointRange([190,191]);
+
+	// TOOLTIP
+	chart.tooltip.contentGenerator(function(graph) {
+		/* console.log(graph); //examine the graph object in the console for more info */
+		return graph.point.country;
+	});
+
+	/* B: */
+	/* http://stackoverflow.com/questions/21532228/how-to-create-a-tooltip-with-custom-value */
+	/* chart.tooltip.contentGenerator(function (d) {
+	   var ptIdx = d.pointIndex;
+	   var serIdx = d.seriesIndex;
+	   z = d.series[serIdx].values[ptIdx].country
+	   return z;
+	   }); */
+
+
+	chart.tooltip.duration(5100);
+	chart.tooltip.hideDelay(100);
+        
+
+	d3.select('#thisplot svg')
+		.datum(nested_data)
+		.transition().duration(200)
+		/* .attr("style", "outline: thin solid black;")  */
+		.call(chart);
+
+	nv.utils.windowResize(chart.update);
+
+	return chart;
+});
+
+
+
+});
+
+</script>
+
+
+
+
+{% endblock %}

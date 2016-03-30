@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	{% block head %}
+	<title>Ranking Countries{% block title %}{% endblock %}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Ranking countries: a preview">
+	<meta name="keywords" content="best country countries">
+	<meta name="author" content="paul">
+	<meta charset="utf-8">
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<!-- <script src="http://d3js.org/d3.v3.min.js"></script>
+	     <script src="{{ url_for('static', filename='js/nv.d3.min.js') }}"></script> -->
+
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<!-- <link href="{{ url_for('static', filename='css/bootstrap-custom.css') }}" rel="stylesheet"> -->
+	<!-- <link href="{{ url_for('static', filename='css/nv.d3.min.css') }}" rel="stylesheet"> -->
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.ico') }}">
+	<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.11.1.css" type="text/css" />
+	<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.11.1.min.js"></script>
+	{{ script | safe }}
+
+	{% endblock %}
+    </head>
+    <body>
+	{% block navbar %}
+	<div class="navbar navbar-static-top navbar-default">
+	    <div class="container">
+
+		<a class="navbar-brand" href="/">Ranking Countries</a>
+		<div class="nav-collapse">
+		    {% block navbar_right %}
+		    <ul class="nav navbar-nav pull-right">
+			<li><a href="{{ url_for('explorer') }}">Data Explorer</a></li>
+			<li><a href="{{ url_for('history') }}">History</a></li>
+		    </ul>
+		    {% endblock %}
+		</div><!--/.nav-collapse -->
+	    </div>
+	</div>
+	{% endblock %}
+	<div class="container page">
+            <div class="content">
+		<div class=page>
+		    <h2>... OK, it's not that fancy. But here it is:</h2>
+		    {{ div | safe }}
+		</div>
+		<br><br>
+		<p><i><b>You selected: </b>{{i1}} and {{i2}} (sorry, still mapping full names!)</i></p>
+		<p><i>Note: Some indicators may not be available for the date being used (2001). Values are standardized.</i></p>
+
+	    </div>
+            <hr>
+            {% block footer %}
+            <footer class="footer" style="text-align:center">
+		<p>MMXVI</p>
+            </footer>
+            {% endblock %}
+	</div>
+	{% block js_footer %}
+
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	
+
+
+	{% endblock %}
+    </body>
+</html>
