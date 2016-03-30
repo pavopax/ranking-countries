@@ -1,5 +1,6 @@
-# Ranking the World's Countries  		-*- mode: markdown -*-
-Paull Paczuski [pavopax.com]   [AMA!] 	
+# Ranking the World's Countries
+
+Paul Paczuski [pavopax.com]   [AMA!] 	
 
 Quick Start
 ===============================================================================
@@ -9,7 +10,6 @@ web app:
 
 http://indicated.herokuapp.com
 
-https://mighty-dawn-88782.herokuapp.com
 
 http://data.worldbank.org
 
@@ -19,7 +19,7 @@ http://www.usnews.com/news/best-countries
 Some data error: Romania is abbreviated variously as ROM or ROU, so
 have to be careful when merging.
 
-Contents 
+Contents [WORKING] 
 ===============================================================================
 * USNWR - methodology notes
 * Q3 - project idea - description
