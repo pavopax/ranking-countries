@@ -1,6 +1,0 @@
-QUICKLY: get request going. see wb data get.use wbdata module? NEED TO BE DONE BY 1!! bc need to get package wbdata to wrok
-`/Users/pawel/Dropbox/projects/tdi-projects/capstone-country-rankings/code/explore`
-
-getting some indicators into plot in r-explore 1-makedata
-
-
