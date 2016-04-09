@@ -3,16 +3,16 @@ source("header.R")                      #source functions and load packages
 ## usn: 60 usn countries
 ## all: all countries
 ## full: countries and regions
-usn <- read.csv("../../data/latest_usn.csv", stringsAsFactors=FALSE,
+usn <- read.csv("../../cache/latest_usn.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-all <- read.csv("../../data/latest_all.csv", stringsAsFactors=FALSE,
+all <- read.csv("../../cache/latest_all.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-full <- read.csv("../../data/latest_full.csv", stringsAsFactors=FALSE,
+full <- read.csv("../../cache/latest_full.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-classes <- read.csv("../../data/classes.csv", stringsAsFactors=FALSE,
+classes <- read.csv("../../cache/classes.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
 
-labels <- read.csv("../../data/series_labels.csv", stringsAsFactors=FALSE) %>%
+labels <- read.csv("../../cache/series_labels.csv", stringsAsFactors=FALSE) %>%
     tbl_df
 
 usn.std <- usn %>% select(-Year) %>% group_by(Series.Code) %>%
