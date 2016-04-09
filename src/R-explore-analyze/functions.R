@@ -19,7 +19,7 @@ get_indicator_counts <- function(data){
 ##' @return 
 ##' @author Paul
 get_latest_available <- function(data){
-    data %>% group_by(Country, Series.Code) %>% na.omit() %>%
+    data %>% na.omit() %>% group_by(Country, Series.Code) %>% 
         arrange(desc(Year)) %>% slice(1) %>% ungroup()
 }
 
@@ -46,4 +46,16 @@ write_my_csv <- function(object_name, path="../../cache/"){
 ##' @author Pawel
 missclass_rate <- function(table){
     return (sum(table)-tr(table))/sum(table)
+}
+
+##' .. content for \description{} (no empty lines) ..
+##' in vector, convert NA to n (or zero, by default)
+##' .. content for \details{} ..
+##' @title 
+##' @param x 
+##' @return 
+##' @author Pawel
+na.zero <- function (x, n=0) {
+    x[is.na(x)] <- n
+    return(x)
 }

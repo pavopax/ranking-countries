@@ -80,7 +80,7 @@ dfall %>% group_by(Year, Series.Code) %>%
     summarise_each(funs(sum(., na.rm = TRUE)))
 
 
-## subset to "good" data availability. using 2010
+## "good" data availability. using 2010
 ## have: 31 indicators with good data for 60 USN countries
 ## have: 24 indicators with good data for all 248 countries
 f <- (2/3)*60
@@ -93,17 +93,31 @@ indic_all_good <- dfall %>% filter(Year==2010 & Series.Code %in% series2)
 
 
 ## subset to LATEST available data, if any
-## and extract indicators for which I have complete data
-nx <- 60                             # all 60 USN countries
+## and extract indicators for which I have 'nx' data
+nx <- (2/3)*length(usn60)
 codes1 <- get_latest_available(dfusn) %>% group_by(Series.Code) %>%
     summarise(n=n()) %>% arrange(desc(n)) %>% filter(n>=nx) %>%
     .$Series.Code
-latest_usn <- get_latest_available(dfusn) %>% filter(Series.Code %in% codes1)
 
-## same codes, but from all countries (as available)
-latest_all <- get_latest_available(dfall) %>% filter(Series.Code %in% codes1)
+## scale needs [,] so it doesn't return attributes
+## http://jeromyanglim.tumblr.com/post/72622792597/how-to-use-scale-function-in-r-to-centre
+latest_usn <- get_latest_available(dfusn) %>%
+    filter(Series.Code %in% codes1) %>%
+    group_by(Series.Code) %>%
+    mutate(zscore=scale(Value, center = TRUE, scale=TRUE)[,]) %>%
+    ungroup()
 
-latest_full <- get_latest_available(dffull) %>% filter(Series.Code %in% codes1)
+latest_all <- get_latest_available(dfall) %>%
+    filter(Series.Code %in% codes1) %>%
+    group_by(Series.Code) %>%
+    mutate(zscore=scale(Value, center = TRUE, scale=TRUE)[,]) %>%
+    ungroup()
+
+latest_full <- get_latest_available(dffull) %>%
+    filter(Series.Code %in% codes1) %>%
+    group_by(Series.Code) %>%
+    mutate(zscore=scale(Value, center = TRUE, scale=TRUE)[,]) %>%
+    ungroup()
 
 
 ## ============================================================================
@@ -119,8 +133,11 @@ classes <- df_meta0 %>% select(Country, Income.Group, Region)
 ## ============================================================================
 ## FINAL DATASETS
 ## ============================================================================
+codes_only <- attrs %>% select(code, indicator) %>% na.omit %>% arrange(code)
+
 write_my_csv("latest_usn")
 write_my_csv("latest_all")
 write_my_csv("latest_full")
 write_my_csv("classes")
 write_my_csv("attrs")
+write_my_csv("codes_only")

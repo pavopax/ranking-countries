@@ -3,20 +3,23 @@ source("header.R")                      #source functions and load packages
 ## usn: 60 usn countries
 ## all: all countries
 ## full: countries and regions
-usn <- read.csv("../../cache/latest_usn.csv", stringsAsFactors=FALSE,
+usn0 <- read.csv("../../cache/latest_usn.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-all <- read.csv("../../cache/latest_all.csv", stringsAsFactors=FALSE,
+all0 <- read.csv("../../cache/latest_all.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-full <- read.csv("../../cache/latest_full.csv", stringsAsFactors=FALSE,
+full0 <- read.csv("../../cache/latest_full.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
 classes <- read.csv("../../cache/classes.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
 
-labels <- read.csv("../../cache/series_labels.csv", stringsAsFactors=FALSE) %>%
+attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE) %>%
     tbl_df
 
-usn.std <- usn %>% select(-Year) %>% group_by(Series.Code) %>%
-    mutate(zscore=scale(Value, center = TRUE, scale=TRUE))
+
+usn <- usn0 %>% select(Country, Series.Code, zscore) %>%
+    spread(Series.Code, zscore) %>%
+    mutate_each(funs(na.zero(.)))
+
 
 
 
@@ -27,7 +30,7 @@ usn.std <- usn %>% select(-Year) %>% group_by(Series.Code) %>%
 ## https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
 library(corrplot)                       
 
-dat <- usn.std %>% select(-Value) %>% spread(Series.Code, zscore)
+dat <- usn %>% spread(Series.Code, zscore)
 M <-  cor(dat[,-1])
 corrplot(M, method="ellipse", order="FPC")
 
