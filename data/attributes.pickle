@@ -200,140 +200,153 @@ p89
 aV/news/best-countries/quality-of-life-rankings
 p90
 a(lp91
-(lp92
 Vfriendly
-p93
+p92
 aVfun
-p94
+p93
 aVpleasant climate
-p95
+p94
 aVscenic
-p96
+p95
 aVsexy
-p97
-aaa(lp98
-(lp99
+p96
+aa(lp97
 Vares about human rights
-p100
+p98
 aVcares about the environment
-p101
+p99
 aVgender equality
-p102
+p100
 aVprogressive
-p103
+p101
 aVreligious freedom
-p104
+p102
 aVrespects property rights
-p105
+p103
 aVtrustworthy
-p106
+p104
 aVwell-distributed political power
-p107
-aaa(lp108
-(lp109
+p105
+aa(lp106
 Vulturally significant in terms of entertainment
-p110
+p107
 aVfashionable
-p111
+p108
 aVhappy
-p112
+p109
 aVhas an influential culture
-p113
+p110
 aVmodern
-p114
+p111
 aVprestigious
-p115
+p112
 aVtrendy
-p116
-aaa(lp117
-(lp118
+p113
+aa(lp114
 Vonnected to the rest of the world
-p119
+p115
 aVeducated population
-p120
+p116
 aVentrepreneurial
-p121
+p117
 aVinnovative
-p122
+p118
 aVprovides easy access to capital
-p123
+p119
 aVskilled labor force
-p124
+p120
 aVtechnological expertise
-p125
+p121
 aVtransparent business practices
-p126
+p122
 aVwell-developed infrastructure
-p127
+p123
 aVwell-developed legal framework
-p128
-aaa(lp129
-(lp130
+p124
+aa(lp125
 Vulturally accessible
-p131
+p126
 aVhas a rich history
-p132
+p127
 aVhas great food
-p133
+p128
 aVmany cultural attractions
-p134
-aaa(lp135
-(lp136
+p129
+aa(lp130
 Vureaucratic
-p137
+p131
 aVcheap manufacturing costs
-p138
+p132
 aVcorrupt
-p139
+p133
 aVfavorable tax environment
-p140
+p134
 aVtransparent government practices
-p141
-aaa(lp142
-(lp143
+p135
+aa(lp136
 Vifferent
-p144
+p137
 aVdistinctive
-p145
+p138
 aVdynamic
-p146
+p139
 aVunique
-p147
-aaa(lp148
-(lp149
+p140
+aa(lp141
 Vleader
-p150
+p142
 aVeconomically influential
-p151
+p143
 aVpolitically influential
-p152
+p144
 aVstrong international alliances
-p153
+p145
 aVstrong military
-p154
-aaa(lp155
-(lp156
+p146
+aa(lp147
 S'a good job market'
-p157
+p148
 aS'affordable'
-p158
+p149
 aS'economically stable'
-p159
+p150
 aS'family friendly'
-p160
+p151
 aS'income equality'
-p161
+p152
 aS'politically stable'
-p162
+p153
 aS'safe'
-p163
+p154
 aS'well-developed public education system'
-p164
+p155
 aS'well-developed public health system'
-p165
-aaatp166
-ba(lp167
+p156
+aatp157
+ba(lp158
 g15
+(g16
+(dp159
+g18
+g19
+(g20
+(I0
+tp160
+g22
+tp161
+Rp162
+(I1
+(I1
+tp163
+g29
+I00
+(lp164
+g35
+atp165
+bsg38
+Nstp166
+Rp167
+ag15
 (g16
 (dp168
 g18
@@ -345,82 +358,60 @@ g22
 tp170
 Rp171
 (I1
-(I1
+(I3
 tp172
 g29
 I00
 (lp173
-g35
+g33
+ag34
+ag36
 atp174
 bsg38
 Nstp175
 Rp176
-ag15
-(g16
-(dp177
-g18
-g19
-(g20
-(I0
-tp178
-g22
-tp179
-Rp180
-(I1
-(I3
-tp181
-g29
-I00
-(lp182
-g33
-ag34
-ag36
-atp183
-bsg38
-Nstp184
-Rp185
-a(dp186
+a(dp177
 S'0.14.1'
-p187
-(dp188
+p178
+(dp179
 S'axes'
-p189
+p180
 g14
 sS'blocks'
-p190
-(lp191
-(dp192
+p181
+(lp182
+(dp183
 S'mgr_locs'
-p193
+p184
 c__builtin__
 slice
-p194
+p185
 (I2
 I3
 I1
-tp195
-Rp196
+tp186
+Rp187
 sS'values'
-p197
+p188
 g59
-sa(dp198
-g193
+sa(dp189
+g184
 g19
 (g20
 (I0
-tp199
+tp190
 g22
-tp200
-Rp201
+tp191
+Rp192
 (I1
 (I3
-tp202
+tp193
 g49
 I00
 S'\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00'
-p203
-tp204
-bsg197
+p194
+tp195
+bsg188
 g70
-sasstp205
+sasstp196
 bsb.

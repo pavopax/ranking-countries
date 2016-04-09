@@ -18,6 +18,26 @@ My data is from:
 http://data.worldbank.org
 
 
+Web Pages
+===============================================================================
+
+## About 
+
+The focus of this projects runs along two dimensions:
+* for me to learn and apply Python, machine learning, etc
+* to explore an interesting dataset
+
+Form my perspective, I focused on:
+* showcasing machine learning methods and tools
+* make a nice presenatin of the 
+
+
+
+## log/history
+
+I adapted:
+
+
 
 Contents of this file
 ===============================================================================
@@ -25,6 +45,9 @@ Contents of this file
 * Q3 - project idea - description
 * Sources
 * Programs
+
+
+
 
 
 
@@ -123,6 +146,10 @@ Programs
 
 Sources 
 ===============================================================================
+
+More on some CPIA indicators:  
+
+http://data.worldbank.org/data-catalog/CPIA
 
 
 scratches 

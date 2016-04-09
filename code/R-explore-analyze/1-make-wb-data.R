@@ -1,11 +1,13 @@
-source("header.R")
+source("header.R")                      #source functions and load packages
 
 df_input0 <- read.csv("../../data/8832f489-b226-41cb-ac28-59241cc84533_Data.csv",
                       stringsAsFactors=FALSE) %>%
     tbl_df %>% rename(Year=X...Time.Code) %>% filter(Series.Code != "")
 df_meta0 <- read.csv("../../data/8832f489-b226-41cb-ac28-59241cc84533_Country - Metadata.csv",
                      stringsAsFactors=FALSE) %>%
-    tbl_df %>% rename(Country.Code=X...Code)
+    tbl_df %>% rename(Country.Code=X...Code) %>%
+    rename(Country=Short.Name)
+
 
 ## TODO: get from scrape output
 usn60 <- c("Algeria", "Argentina", "Australia", "Austria",
@@ -25,23 +27,32 @@ usn60 <- c("Algeria", "Argentina", "Australia", "Austria",
     gsub("South Korea", "Korea", .) 
 
 df_input0$Year %<>% gsub("YR", "", .) %>% as.numeric
-country_names <- df_meta0 %>% select(Country.Code, Short.Name) %>%
-    rename(Country=Short.Name)
+country_names <- df_meta0 %>% select(Country.Code, Country)
+
+## cats = smaller groupings from this dataset
+cats <- df_meta0 %>% filter(Income.Group=="") %>%
+    filter(Long.Name !="") %>% .$Long.Name
 
 ## ============================================================================
 ## MAIN DATASETS
 ## ============================================================================
-dfall <- left_join(country_names, df_input0, by="Country.Code") %>%
-    select(-Country.Code) %>%
-    arrange(Country, Year, Series.Code)
-dfusn <- dfall %>% filter(Country %in% usn60)
 
-saveRDS(dfall, "dfall.rds")
-saveRDS(dfusn, "dfusn.rds")
+## 248, includes "cats"
+## 215 countries
+## 60 USN
+dffull <- left_join(country_names, df_input0, by="Country.Code") %>%
+    select(-Country.Code) %>% 
+    arrange(Country, Year, Series.Code) %>%
+    filter(Country != "")
+dfall <- dffull %>% filter(!(Country %in% cats))
+dfusn <- dffull %>% filter(Country %in% usn60)
+
+# saveRDS(dfall, "dfall.rds")
+# saveRDS(dfusn, "dfusn.rds")
 
 
 ## ============================================================================
-## EXPLORE
+## EXPLORE INDICATORS
 ## ============================================================================
 ## which year has most data?
 yrs <- dfusn$Year %>% unique
@@ -57,7 +68,7 @@ indic_usn %>% spread(Year, n)
 
 ## available indicators (out of all 248 countries)
 indic_all <- get_indicator_counts(dfall)
-indic_all %>% spread(Year, n)
+indic_all %>% spread(Year, n) %>% as.data.frame
 
 ## sum the year columns to find max # of available indicators
 dfall %>% group_by(Year, Series.Code) %>%
@@ -77,17 +88,35 @@ f <- (2/3)*248
 series2 <- indic_all %>% filter(Year==2010 & n>=f) %>% .$Series.Code
 indic_all_good <- dfall %>% filter(Year==2010 & Series.Code %in% series2)
 
+
+## subset to LATEST available data, if any
+## and extract indicators for which I have complete data
+nx <- 60                             # all 60 USN countries
+codes1 <- get_latest_available(dfusn) %>% group_by(Series.Code) %>%
+    summarise(n=n()) %>% arrange(desc(n)) %>% filter(n>=nx) %>%
+    .$Series.Code
+latest_usn <- get_latest_available(dfusn) %>% filter(Series.Code %in% codes1)
+
+## same codes, but from all countries (as available)
+latest_all <- get_latest_available(dfall) %>% filter(Series.Code %in% codes1)
+
+latest_full <- get_latest_available(dffull) %>% filter(Series.Code %in% codes1)
+
+
+## ============================================================================
+## EXPLORE potential classification (Y) variables
+## ============================================================================
+cats
+
+classes <- df_meta0 %>% select(Country, Income.Group, Region)
+
+
+
+
 ## ============================================================================
 ## FINAL DATASETS
 ## ============================================================================
-write.csv(indic_usn_good, file="../../data/indicators_usn_good.csv")
-write.csv(indic_all_good, file="../../data/indicators_all_good.csv")
-
-
-    
-
-
-
-
-
-
+write_my_csv("latest_usn")
+write_my_csv("latest_all")
+write_my_csv("latest_full")
+write_my_csv("classes")
