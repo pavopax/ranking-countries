@@ -16,33 +16,61 @@ attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE) %>%
     tbl_df
 
 
-usn <- usn0 %>% select(Country, Series.Code, zscore_) %>%
+usn.wide <- usn0 %>% select(Country, Series.Code, zscore_) %>%
     spread(Series.Code, zscore_) %>%
     mutate_each(funs(na.zero(.)))
 
+## back from wide to long to include imputed vars for each indicator
+usn1 <- usn.wide %>% gather("code", "zscore_", -1)
 
 
 
 ## ============================================================================
 ## Explore
 ## ============================================================================
+
+
+## # of indicators by country. max = 38
+usn0 %>% group_by(Country) %>% tally %>% arrange(n)
+
 ## amazing
 ## https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
 library(corrplot)                       
 
-dat <- usn
+dat <- usn.wide
 M <-  cor(dat[,-1])
 
 png("../../output/2-corrs.png", width=800, height=800)
 corrplot(M, method="ellipse", order="FPC")
 dev.off()
 
+
+## what is each country good at? ... bad at? 
+nn <- 5
+usn1 %>% group_by(Country) %>%  top_n(., nn) %>% ungroup() %>%
+    arrange(desc(zscore_))
+
+usn1 %>% group_by(Country) %>% arrange(zscore_)  %>% slice(1:nn) %>%
+    ungroup() %>% arrange(zscore_)
+
+
+
+
+
+
+
 ## ============================================================================
 ## Rank them by summing zscores
 ## ============================================================================
-ranked <- usn %>% mutate(rank1=rowSums(.[-1])) %>% arrange(desc(rank1))
-
+## by average
+ranked <- usn.wide %>% mutate(rank1=rowMeans(.[-1])) %>% arrange(desc(rank1))
 ranked %>% select(Country, rank1) %>% as.data.frame
+
+
+## by summing
+ranked <- usn.wide %>% mutate(rank1=rowSums(.[-1])) %>% arrange(desc(rank1))
+ranked %>% select(Country, rank1) %>% as.data.frame
+
 
 
 
