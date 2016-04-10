@@ -3,11 +3,11 @@ source("header.R")                      #source functions and load packages
 ## usn: 60 usn countries
 ## all: all countries
 ## full: countries and regions
-usn0 <- read.csv("../../cache/latest_usn.csv", stringsAsFactors=FALSE,
+usn0 <- read.csv("../../cache/latest_usn_corrected.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-all0 <- read.csv("../../cache/latest_all.csv", stringsAsFactors=FALSE,
+all0 <- read.csv("../../cache/latest_all_corrected.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-full0 <- read.csv("../../cache/latest_full.csv", stringsAsFactors=FALSE,
+full0 <- read.csv("../../cache/latest_full_corrected.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
 classes <- read.csv("../../cache/classes.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
@@ -16,8 +16,8 @@ attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE) %>%
     tbl_df
 
 
-usn <- usn0 %>% select(Country, Series.Code, zscore) %>%
-    spread(Series.Code, zscore) %>%
+usn <- usn0 %>% select(Country, Series.Code, zscore_) %>%
+    spread(Series.Code, zscore_) %>%
     mutate_each(funs(na.zero(.)))
 
 
@@ -38,8 +38,11 @@ corrplot(M, method="ellipse", order="FPC")
 dev.off()
 
 ## ============================================================================
-## Rank them
+## Rank them by summing zscores
 ## ============================================================================
+ranked <- usn %>% mutate(rank1=rowSums(.[-1])) %>% arrange(desc(rank1))
+
+ranked %>% select(Country, rank1) %>% as.data.frame
 
 
 
@@ -115,7 +118,7 @@ library(class)                          #knn
 library(psych)                          #tr()
 library(MASS)                           #lda()
 
-usnX1 <- usn.std %>% dplyr::select(-Value) %>% spread(Series.Code, zscore) 
+usnX1 <- usn.std %>% dplyr::select(-Value) %>% spread(Series.Code, zscore_) 
 
 df0 <- left_join(usnX1, classes, by="Country")
 
