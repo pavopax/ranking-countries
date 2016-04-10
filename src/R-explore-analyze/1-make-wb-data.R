@@ -120,6 +120,25 @@ latest_full <- get_latest_available(dffull) %>%
     ungroup()
 
 
+## INVERT "negative" variables to make them positive
+inv <- attrs %>% select(code, need_inverse) %>% na.omit %>%
+    rename(Series.Code=code) 
+
+latest_usn_corrected <- left_join(latest_usn, inv, by="Series.Code") %>%
+    mutate(zscore_=ifelse( (is.na(need_inverse) %in% FALSE), -zscore, zscore))
+
+latest_all_corrected <- left_join(latest_all, inv, by="Series.Code") %>%
+    mutate(zscore_=ifelse( (is.na(need_inverse) %in% FALSE), -zscore, zscore))
+
+latest_full_corrected <- left_join(latest_full, inv, by="Series.Code") %>%
+    mutate(zscore_=ifelse( (is.na(need_inverse) %in% FALSE), -zscore, zscore))
+
+## check
+latest_usn_corrected %>%
+    filter(Series.Code=="IC.BUS.EASE.XQ") %>%
+    arrange(zscore)
+
+
 ## ============================================================================
 ## EXPLORE potential classification (Y) variables
 ## ============================================================================
@@ -135,9 +154,9 @@ classes <- df_meta0 %>% select(Country, Income.Group, Region)
 ## ============================================================================
 codes_only <- attrs %>% select(code, indicator) %>% na.omit %>% arrange(code)
 
-write_my_csv("latest_usn")
-write_my_csv("latest_all")
-write_my_csv("latest_full")
+write_my_csv("latest_usn_corrected")
+write_my_csv("latest_all_corrected")
+write_my_csv("latest_full_corrected")
 write_my_csv("classes")
 write_my_csv("attrs")
 write_my_csv("codes_only")

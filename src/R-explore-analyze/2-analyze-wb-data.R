@@ -30,10 +30,12 @@ usn <- usn0 %>% select(Country, Series.Code, zscore) %>%
 ## https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
 library(corrplot)                       
 
-dat <- usn %>% spread(Series.Code, zscore)
+dat <- usn
 M <-  cor(dat[,-1])
-corrplot(M, method="ellipse", order="FPC")
 
+png("../../output/2-corrs.png", width=800, height=800)
+corrplot(M, method="ellipse", order="FPC")
+dev.off()
 
 ## ============================================================================
 ## Rank them
