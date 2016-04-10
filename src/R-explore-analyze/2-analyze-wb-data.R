@@ -12,23 +12,28 @@ full0 <- read.csv("../../cache/latest_full_corrected.csv", stringsAsFactors=FALS
 classes <- read.csv("../../cache/classes.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
 
-attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE) %>%
-    tbl_df
+attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE,
+                  row.names=1) %>% tbl_df
 
 
-usn.wide <- usn0 %>% select(Country, Series.Code, zscore_) %>%
-    spread(Series.Code, zscore_) %>%
+## make data for this program
+usn_feats <- attrs %>% select(Indicator, usn_feat) %>% na.omit() %>%
+    filter(usn_feat==1) %>% .$Indicator
+
+
+usn.wide <- usn0 %>% select(Country, Indicator, zscore_) %>%
+    filter(Indicator %in% usn_feats) %>% 
+    spread(Indicator, zscore_) %>%
     mutate_each(funs(na.zero(.)))
 
 ## back from wide to long to include imputed vars for each indicator
-usn1 <- usn.wide %>% gather("code", "zscore_", -1)
+usn1 <- usn.wide %>% gather("Indicator", "zscore_", -1)
 
 
 
 ## ============================================================================
 ## Explore
 ## ============================================================================
-
 
 ## # of indicators by country. max = 38
 usn0 %>% group_by(Country) %>% tally %>% arrange(n)
@@ -63,13 +68,14 @@ usn1 %>% group_by(Country) %>% arrange(zscore_)  %>% slice(1:nn) %>%
 ## Rank them by summing zscores
 ## ============================================================================
 ## by average
-ranked <- usn.wide %>% mutate(rank1=rowMeans(.[-1])) %>% arrange(desc(rank1))
-ranked %>% select(Country, rank1) %>% as.data.frame
+
+ranked <- usn.wide %>% mutate(zmean=rowMeans(.[-1])) %>% arrange(desc(zmean))
+ranked %>% select(Country, zmean) %>% as.data.frame
 
 
 ## by summing
-ranked <- usn.wide %>% mutate(rank1=rowSums(.[-1])) %>% arrange(desc(rank1))
-ranked %>% select(Country, rank1) %>% as.data.frame
+ranked <- usn.wide %>% mutate(zsum=rowSums(.[-1])) %>% arrange(desc(zsum))
+ranked %>% select(Country, zsum) %>% as.data.frame
 
 
 
