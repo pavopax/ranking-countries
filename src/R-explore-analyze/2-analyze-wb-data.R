@@ -11,7 +11,6 @@ full0 <- read.csv("../../cache/latest_full_corrected.csv", stringsAsFactors=FALS
                 row.names=1) %>% tbl_df
 classes <- read.csv("../../cache/classes.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
-
 attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE,
                   row.names=1) %>% tbl_df
 
@@ -34,6 +33,7 @@ usn1 <- usn.wide %>% gather("Indicator", "zscore_", -1)
 ## ============================================================================
 ## Explore
 ## ============================================================================
+
 
 ## # of indicators by country. max = 38
 usn0 %>% group_by(Country) %>% tally %>% arrange(n)
@@ -59,8 +59,12 @@ usn1 %>% group_by(Country) %>% arrange(zscore_)  %>% slice(1:nn) %>%
     ungroup() %>% arrange(zscore_)
 
 
+## all indicators hers
+my.indics <- names(usn.wide)[-1]
+my_indicators <- attrs %>% filter(Indicator %in% my.indics) %>%
+    select(Group, Attribute, Indicator, Label) %
 
-
+write_my_csv("my_indicators")
 
 
 
@@ -70,7 +74,10 @@ usn1 %>% group_by(Country) %>% arrange(zscore_)  %>% slice(1:nn) %>%
 ## by average
 
 ranked <- usn.wide %>% mutate(zmean=rowMeans(.[-1])) %>% arrange(desc(zmean))
-ranked %>% select(Country, zmean) %>% as.data.frame
+rank1 <- ranked %>% select(Country, zmean) %>%
+    mutate(score2=100*round(zmean,2)) %>% select(-zmean) %>% as.data.frame
+names(rank1) <- c("Country", "Score (0=average)")
+write_my_csv("rank1")
 
 
 ## by summing
@@ -89,7 +96,7 @@ ranked %>% select(Country, zsum) %>% as.data.frame
 ## USN
 
 ## TODO: use zscore here!
-usnX1 <- usn %>% select(-Year) %>% spread(Series.Code, Value) 
+usnX1 <- usn1 %>% spread(Indicator, zscore_) 
 usnX <- usnX1 %>% select(-Country)
 
 pca <- princomp(usnX[,-1], cor=T)
@@ -98,12 +105,38 @@ summary(pca)
 
 predicts <- predict(pca)
 
-png("../../plots/pca_country.png", width=800, height=800)
+png("../../output/pca_country2.png", width=800, height=800)
 plot(predicts[,1], predicts[,2], type="n",
      xlab="Component 1", ylab="Component 2")
 text(predicts[,1], predicts[,2], usnX1$Country,)
 title(main="Which countries are similar?")
 dev.off()     
+
+theme_set(theme_bw())
+dat <- as.data.frame(predicts)
+
+p1 <- ggplot(dat, aes(x=dat[,1], y=dat[,2], label=usnX1$Country)) +
+    geom_text(size=3) + labs(x="Component 1", y="Component 2") +
+    xlim(c(-5,8))
+ggsave("../../output/ggpca1.png", p1, width=7, height=5)
+
+library(ggfortify)
+
+
+p <- ggplot(aes(x=
+
+autoplot(pca, labels=usnX1$Country)
+
+library(ggbiplot)
+#library(scales)
+g <- ggbiplot(pca, obs.scale = 1, var.scale = 1
+              #groups = usnX1$Country,
+              ellipse = TRUE, 
+              circle = TRUE)
+g <- g + scale_color_discrete(name = '')
+g <- g + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+g
 
 ## barplot(pca$sdev)
 ## screeplot(pca)
