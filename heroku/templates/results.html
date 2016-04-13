@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+
+<h1>Ranking [Preliminary/Preview]</h1>
+
+<p><i>Jump to:</i> &nbsp;&nbsp;<a href="#details">[Data]</a> &nbsp;&nbsp;&nbsp;<a href="#toolkit">[Toolkit]</a></p>
+
+<div id="ranking" >
+<h2>Ranking</h2>
+<p>Below is the current ranking based on 25 features, which were mapped from the US News attributes (65 total).</p>
+<img src="{{ url_for('static', filename='img/ranking.png')}}" class="img-responsive" alt="Responsive image" width="400">
+
+</div>
+
+In this section, I present some initial insight from our dataset.
+
+<h2>Correlations</h2>
+<p>Below is a correlation plot of all 25 current indicators from our ranking. Cells in blue correspond to two indicators which are positively associated (correlated). That is, as one increases, the other increases also. More brown cells show negative association: higher values of one variable are associated with lower values of the other.</p>
+<p><a href="#indicators">Click here for a dictionary of these indicators.</a></p>
+<img src="{{ url_for('static', filename='img/indicator-correlations.png')}}" class="img-responsive" alt="Responsive image" width="800" border="1">
+
+Business ease is inversely correlated with:
+logistical performance
+GDP
+strength of legal rights
+
+Business ease is positively correlated with:
+population growth
+
+
+
+<h2>Which countries are unique?</h2>
+PCA:
+
+There is no place like USA, no place like China
+
+<img src="{{ url_for('static', filename='img/pca.png')}}" class="img-responsive" alt="Responsive image" width="800">
+
+Details: these 2 components from our "PCA" model explain about 32% of the variability between these countries, based on 25 features (the "indicators").
+
+
+<div id="indicators">
+<h2>Indicators</h2>
+Higher score = more positive
+
+<p><a href="{{ url_for('indicators')}}">Details on indicators are here</a></p>
+
+<p>Thus far, I selected 25 inidicator which map to the attributes like so:</p>
+
+<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+
+</div>
+
+<p>We're all familiar with various rankings of the world's universities. Recently, however, US News and World Report went a step further with <a href="http://www.usnews.com/news/best-countries/overall-full-list" target="_blank">a ranking of the world's countries</a>. Partly in order to investigate their methodology, I will create my own ranking using publicly accessible data.</p>
+<p>On this page, we look into two measures that were part of the ranking: GDP per capita and income equality. The plot shows data for the top 60 "Best Countries" according to US News (to filter, click or double-click on the region labels in the top right).</p>
+
+<div id="toolkit">
+	<h2>Toolkit</h2>
+	<p>Data munging was done with R. The plot was done in D3 and is based on a template from <a href="https://github.com/novus/nvd3" target="_blank">NVD3</a>. Page styling was done with <a href="http://getbootstrap.com" target="_blank">Bootstrap</a> (plus some minor CSS and HTML tweaks - Safari console debugger was very useful!). Everything was packaged together with <a href="http://flask.pocoo.org" target="_blank">Flask</a> and deployed on <a href="http://heroku.com" target="_blank">Heroku</a>. <a href="{{ url_for('static', filename='ico/favicon.ico') }}" target="_blank">Favicon</a> is my own, created on <a href="https://www.fiftythree.com" target="_blank">Paper for iOS</a> and converted with <a href="http://www.favicon.cc/" target="_blank">favicon.cc</a></p>
+
+</div>
+
+
+
+
+
+
+{% endblock %}

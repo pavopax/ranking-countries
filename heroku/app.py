@@ -143,6 +143,14 @@ def graph():
                            i1=ind1,i2 = ind2)
 
 
+@app.route("/results")
+def results():
+    return render_template('results.html')
+
+@app.route("/indicators")
+def indicators():
+    return render_template('indicators.html')
+
 @app.route("/history")
 def history():
     return render_template('history.html')
