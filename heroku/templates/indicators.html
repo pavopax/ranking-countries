@@ -33,8 +33,9 @@
 		<div class="nav-collapse">
 		    {% block navbar_right %}
 		    <ul class="nav navbar-nav pull-right">
+			<li><a href="{{ url_for('ranking') }}">Ranking</a></li>
 			<li><a href="{{ url_for('explorer') }}">Data Explorer</a></li>
-			<li><a href="{{ url_for('results') }}">Results</a></li>
+			<li><a href="{{ url_for('insights') }}">Insights</a></li>
 			<!-- <li><a href="{{ url_for('history') }}">History</a></li> -->
 			<!-- <li><a href="#details">Data</a></li>
 			     <li><a href="#toolkit">Toolkit</a></li> -->

@@ -33,8 +33,9 @@
 		<div class="nav-collapse">
 		    {% block navbar_right %}
 		    <ul class="nav navbar-nav pull-right">
+			<li><a href="{{ url_for('ranking') }}">Ranking</a></li>
 			<li><a href="{{ url_for('explorer') }}">Data Explorer</a></li>
-			<li><a href="{{ url_for('history') }}">History</a></li>
+			<li><a href="{{ url_for('insights') }}">Insights</a></li>
 		    </ul>
 		    {% endblock %}
 		</div><!--/.nav-collapse -->
@@ -50,7 +51,7 @@
 		<br><br>
 		<p><i><b>You selected: </b>{{i1}} and {{i2}} (sorry, still mapping full names!)</i></p>
 		<p><i>Note: Some indicators may not be available for the date being used (2001). Values are standardized.</i></p>
-
+		<p><a href="{{ url_for('week1') }}">NOTE: Here is where I am heading with this feature.</a></p>
 	    </div>
             <hr>
             {% block footer %}
