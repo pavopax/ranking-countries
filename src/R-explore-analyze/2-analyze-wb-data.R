@@ -62,7 +62,7 @@ usn1 %>% group_by(Country) %>% arrange(zscore_)  %>% slice(1:nn) %>%
 ## all indicators hers
 my.indics <- names(usn.wide)[-1]
 my_indicators <- attrs %>% filter(Indicator %in% my.indics) %>%
-    select(Group, Attribute, Indicator, Label) %
+    select(Group, Attribute, Indicator, Label) 
 
 write_my_csv("my_indicators")
 
