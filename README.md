@@ -1,6 +1,6 @@
 # Ranking the World's Countries
 
-Paul Paczuski [pavopax.com](pavopax.com)   [AMA!] 	
+Paul Paczuski [pavopax.com](http://pavopax.github.io)   [AMA!] 	
 
 Quick Start
 ===============================================================================
