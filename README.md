@@ -29,9 +29,7 @@ python
 
 * `app.py` implements module/class `IndicatorForm`
 
-![ele](https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png) Postgres database
-
-<img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="20px">Postgres database
+Postgres <img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="20px"> database
 *  deployed remotely, interacts with Flask (see Data Explorer)
 
 
