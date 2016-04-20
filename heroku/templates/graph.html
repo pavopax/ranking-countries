@@ -36,6 +36,7 @@
 			<li><a href="{{ url_for('ranking') }}">Ranking</a></li>
 			<li><a href="{{ url_for('explorer') }}">Data Explorer</a></li>
 			<li><a href="{{ url_for('insights') }}">Insights</a></li>
+			<li><a href="http://github.com/pavopax/ranking-countries" target="_blank">Code</a></li>
 		    </ul>
 		    {% endblock %}
 		</div><!--/.nav-collapse -->
@@ -45,13 +46,14 @@
 	<div class="container page">
             <div class="content">
 		<div class=page>
-		    <h2>... OK, it's not that fancy. But here it is:</h2>
+		    <h2>Data Explorer</h2>
 		    {{ div | safe }}
 		</div>
 		<br><br>
-		<p><i><b>You selected: </b>{{i1}} and {{i2}} (sorry, still mapping full names!)</i></p>
-		<p><i>Note: Some indicators may not be available for the date being used (2001). Values are standardized.</i></p>
-		<p><a href="{{ url_for('week1') }}">NOTE: Here is where I am heading with this feature.</a></p>
+		<p><i>Note: All values are standardized, so that a value of 0 is an average value, while positive values indicate greater than average, and negative values indicate lower than average.</i></p>
+		<p><i>Also, some indicators are inverted so that postive values are always "better" or "greater" than negative values. This is not (yet) noted in the axis labels.</i></p>
+
+		<p><a href="{{ url_for('week1') }}">Click here for a fancier but static version of a similar plot.</a></p>
 	    </div>
             <hr>
             {% block footer %}

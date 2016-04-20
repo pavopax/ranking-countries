@@ -14,14 +14,15 @@
 		<legend>Plot some indicators from the World Bank.</legend>
 		{{ form.hidden_tag() }}
 		
-		<b><i>NOTE: select distinct indicators. Otherwise, you will get an error.</i></b><br><br>
 		<div style = font-size:20px; font-weight:bold; margin-left:150px;>
 		    {{ form.indicator1.label }}<br>
 		    {{ form.indicator1 }}
 		    <br>
 		    {{ form.indicator2.label }}<br>
 		    {{ form.indicator2 }}
-		    <br>
+		    <div style = font-size:12px; font-weight:bold; margin-left:150px;>
+			<br><b><i>NOTE: </b>Select 2 distinct indicators. Otherwise, you will get an error.</i><br><br>
+		    </div>
 		    {{ form.title.label }}<br>
 		    {{ form.title }}
 		    <br><br>
