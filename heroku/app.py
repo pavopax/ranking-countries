@@ -2,14 +2,19 @@ import os
 import wbdata
 import time
 import datetime
-import pandas
+import pandas as pd
 import numpy as np
+import psycopg2
+import urlparse
 
 from flask import Flask, render_template, send_from_directory, request, redirect, flash
 from bokeh.plotting import figure
 from bokeh.embed import components
+from flask.ext.sqlalchemy import SQLAlchemy
 
+# my forms.py file
 from forms import IndicatorForm
+
 
 # initialization
 app = Flask(__name__)
@@ -17,10 +22,37 @@ app.config.update(
     DEBUG=True,
 )
 
+# see next block
+# http://blog.y3xz.com/blog/2012/08/16/flask-and-postgresql-on-heroku
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# db = SQLAlchemy(app)
 
-# for csrf stuff (?) 
+# https://devcenter.heroku.com/articles/heroku-postgresql#connecting-in-python
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+conn = psycopg2.connect(
+    database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+)
+
+# http://stackoverflow.com/questions/31473457/converting-query-results-into-dataframe-in-python
+cursor = conn.cursor()
+cursor.execute(query)
+rows = pd.DataFrame(cursor.fetchall(), columns=['Country', 'Indicator', 'zscore'])
+
+for row in rows:
+    print row
+
+
+# for csrf stuff (?)
+# for flask-wtf (forms.py)
 app.secret_key = 'development key'
 
+# for passing some vars from user input
 app.vars={}
 
 
@@ -164,6 +196,11 @@ def history():
 @app.route("/week1")
 def week1():
     return render_template('week1.html')
+
+
+@app.route("/testing")
+def testing():
+    return render_template('testing.html')
 
 
 # launch

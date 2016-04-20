@@ -18,6 +18,20 @@ My data is from:
 http://data.worldbank.org
 
 
+Toolkit 
+===============================================================================
+
+heroku
+
+virtual env
+
+python
+
+* `app.py` implements module/class `IndicatorForm`
+
+
+
+
 Web Pages (working)
 ===============================================================================
 

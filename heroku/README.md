@@ -28,6 +28,7 @@ THEN! don't forget to activate virualenv:
 
 	source venv/bin/activate
 
+        deactivate
 
 Logs map
 ===============================================================================
