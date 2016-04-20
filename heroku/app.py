@@ -105,7 +105,6 @@ def graph():
 	       x_axis_label = labs[0][1], y_axis_label = labs[1][1])
     p.circle(x=df[df.columns[0]], y=df[df.columns[1]], size=10,
 	     color="navy", alpha=0.5)
-
     p.xaxis.axis_label_text_font_size = "10pt"
     p.yaxis.axis_label_text_font_size = "10pt"
 
