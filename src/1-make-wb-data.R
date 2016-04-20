@@ -1,4 +1,5 @@
 ## create SQL database + cached data
+library(DBI)                            #first, before dplyr (bug?)
 source("header.R")                      #source functions and load packages
 
 
@@ -176,14 +177,12 @@ codes_only <- attrs %>% select(Indicator, Label) %>%
 ## connect to python:
 # https://devcenter.heroku.com/articles/heroku-postgresql#provisioning-the-add-on
 
-library(DBI)
+
 
 ## need to have open Postgres.app 
-con <- dbConnect(RPostgres::Postgres())
-dbWriteTable(conn=con, name="latest_usn", value=as.data.frame(latest_usn))
-
-
-## test
-dbWriteTable(conn=con, name="test", value=as.data.frame(latest_usn[1:40,]))
-
+con <- dbConnect(RPostgres::Postgres(), dbname="wb_indicators")
+dbWriteTable(conn=con, name="usn", value=as.data.frame(latest_usn))
+dbWriteTable(conn=con, name="codes", value=as.data.frame(codes_only))
+#dbWriteTable(conn=con, name="test", value=as.data.frame(latest_usn[1:40,]))
+dbDisconnect(RPostgres::Postgres(), dbname="wb_indicators")
 

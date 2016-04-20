@@ -1,6 +1,6 @@
 # Ranking the World's Countries
 
-Paul Paczuski [pavopax.com]   [AMA!] 	
+Paul Paczuski [pavopax.com](pavopax.com)   [AMA!] 	
 
 Quick Start
 ===============================================================================
@@ -29,27 +29,9 @@ python
 
 * `app.py` implements module/class `IndicatorForm`
 
+Postgres database, deployed remotely, interacts with Flask (see Data Explorer)
 
 
-
-Web Pages (working)
-===============================================================================
-
-## About 
-
-The focus of this projects runs along two dimensions:
-* for me to learn and apply Python, machine learning, etc
-* to explore an interesting dataset
-
-Form my perspective, I focused on:
-* showcasing machine learning methods and tools
-* make a nice presenatin of the 
-
-
-
-## log/history
-
-I adapted x, y, z
 
 
 USNWR - methodology notes

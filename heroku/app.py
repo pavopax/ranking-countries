@@ -7,7 +7,7 @@ import numpy as np
 import psycopg2
 import urlparse
 
-from flask import Flask, render_template, send_from_directory, request, redirect, flash
+from flask import Flask, render_template, send_from_directory, request,redirect, flash
 from bokeh.plotting import figure
 from bokeh.embed import components
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -22,30 +22,7 @@ app.config.update(
     DEBUG=True,
 )
 
-# see next block
-# http://blog.y3xz.com/blog/2012/08/16/flask-and-postgresql-on-heroku
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-# db = SQLAlchemy(app)
 
-# https://devcenter.heroku.com/articles/heroku-postgresql#connecting-in-python
-urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
-
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
-
-# http://stackoverflow.com/questions/31473457/converting-query-results-into-dataframe-in-python
-cursor = conn.cursor()
-cursor.execute(query)
-rows = pd.DataFrame(cursor.fetchall(), columns=['Country', 'Indicator', 'zscore'])
-
-for row in rows:
-    print row
 
 
 # for csrf stuff (?)
@@ -200,8 +177,42 @@ def week1():
 
 @app.route("/testing")
 def testing():
-    return render_template('testing.html')
+    # https://devcenter.heroku.com/articles/heroku-postgresql#connecting-in-python
+    urlparse.uses_netloc.append("postgres")
+    url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+
+    # http://stackoverflow.com/questions/31473457/converting-query-results-into-dataframe-in-python
+    # QUOTES ARE important: """ vs ' vs "
+    # http://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+    #query = """SELECT "Country", "Indicator", "zscore" from usn"""
+    query = """SELECT "Country", "Indicator", "zscore" from usn WHERE "Indicator"
+    IN ('AG.LND.TOTL.K2', 'SI.POV.GINI');"""
+
+    cursor = conn.cursor()
+    cursor.execute(query)
+
+    df=pd.DataFrame(cursor.fetchall(), columns=['Country', 'Indicator', 'zscore'])
+    df = df.pivot('Country', 'Indicator')
+    df = df.zscore
+
+    conn.commit();
+    conn.close();
+
+    p = figure(width=700, height=500, title = 'my title',
+	       x_axis_label = df.columns[1], y_axis_label = df.columns[0])
+    p.circle(x=df[df.columns[1]], y=df[df.columns[0]], size=10,
+	     color="navy", alpha=0.5)
+
+    script, div = components(p)
+    return render_template('testing.html',  script=script, div=div)
 
 # launch
 if __name__ == "__main__":
