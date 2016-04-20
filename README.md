@@ -29,7 +29,9 @@ python
 
 * `app.py` implements module/class `IndicatorForm`
 
-Postgres database, deployed remotely, interacts with Flask (see Data Explorer)
+![ele](https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png) Postgres database
+
+*  deployed remotely, interacts with Flask (see Data Explorer)
 
 
 
