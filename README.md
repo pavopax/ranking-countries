@@ -31,6 +31,7 @@ python
 
 ![ele](https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png) Postgres database
 
+<img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="20px">Postgres database
 *  deployed remotely, interacts with Flask (see Data Explorer)
 
 
