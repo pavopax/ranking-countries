@@ -10,10 +10,7 @@ from flask import Flask, render_template, send_from_directory, request,redirect,
 from bokeh.plotting import figure
 from bokeh.embed import components
 #from flask.ext.sqlalchemy import SQLAlchemy
-
-# my forms.py file
-from forms import IndicatorForm
-
+from forms import IndicatorForm  # my forms.py file
 
 # initialization
 app = Flask(__name__)
@@ -29,20 +26,17 @@ app.secret_key = 'development key'
 # for passing some vars from user input
 app.vars={}
 
-
-# controllers
-
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'ico/favicon.ico')
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# lead main page to index
 @app.route('/')
 def main():
   return redirect('/index')
@@ -53,11 +47,9 @@ def index():
     return render_template('index.html')
 
 
-
 @app.route('/explorer', methods = ['GET', 'POST'])
 def explorer():
     form = IndicatorForm()
-   
     if request.method == 'POST':
         if form.validate() == False:
             flash('All fields are required.')
@@ -126,9 +118,11 @@ def graph():
 def ranking():
     return render_template('ranking.html')
 
+
 @app.route("/indicators")
 def indicators():
     return render_template('indicators.html')
+
 
 @app.route("/insights")
 def insights():
@@ -149,6 +143,7 @@ def week1():
 def testing():
     """ this is a testing page """
     return render_template('testing.html')
+
 
 # launch
 if __name__ == "__main__":
