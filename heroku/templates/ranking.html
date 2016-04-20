@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+
+<h1>Ranking [Preliminary/Preview]</h1>
+
+
+
+<div id="ranking" >
+<p>Below is our current ranking, based on 25 features, which were mapped from the US News attributes (65 total).</p><p><a href="{{ url_for('insights')}}">See important details on the Indicators at bottom of this page.</a></p>
+<img src="{{ url_for('static', filename='img/ranking.png')}}" class="img-responsive" alt="Responsive image" width="400">
+
+</div>
+
+
+
+
+{% endblock %}
