@@ -27,10 +27,10 @@ virtual env
 
 python
 
-* `app.py` implements module/class `IndicatorForm`
+* `app.py` implements custom module/class `IndicatorForm`
 
 Postgres <img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="24px"> database
-*  deployed remotely, interacts with Flask (see Data Explorer)
+*  deployed remotely, interacts with Flask (see the [Data Explorer](http://indicated.herokuapp.com/explorer) )
 
 
 

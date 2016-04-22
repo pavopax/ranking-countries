@@ -6,9 +6,9 @@
 ##' @return data frame in wide format 
 ##' @author Paul
 get_indicator_counts <- function(data){
-    data %>% group_by(Year, Indicator) %>%
+    data %>% group_by(year, indicator) %>%
         na.omit() %>% summarise(n=n()) %>%
-        arrange(Year, desc(n))
+        arrange(year, desc(n))
 }
 
 ##' .. content for \description{} (no empty lines) ..
@@ -19,8 +19,8 @@ get_indicator_counts <- function(data){
 ##' @return 
 ##' @author Paul
 get_latest_available <- function(data){
-    data %>% na.omit() %>% group_by(Country, Indicator) %>% 
-        arrange(desc(Year)) %>% slice(1) %>% ungroup()
+    data %>% na.omit() %>% group_by(country, indicator) %>% 
+        arrange(desc(year)) %>% slice(1) %>% ungroup()
 }
 
 ##' .. content for \description{} (no empty lines) ..

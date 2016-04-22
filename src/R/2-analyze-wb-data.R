@@ -1,4 +1,5 @@
-source("header.R")                      #source functions and load packages
+source("../header.R")                      #source functions and load packages
+source("functions.R")
 
 ## usn: 60 usn countries
 ## all: all countries
@@ -13,19 +14,28 @@ classes <- read.csv("../../cache/classes.csv", stringsAsFactors=FALSE,
                 row.names=1) %>% tbl_df
 attrs <- read.csv("../../cache/attrs.csv", stringsAsFactors=FALSE,
                   row.names=1) %>% tbl_df
-
+codes <- read.csv("../../cache/codes.csv", stringsAsFactors=FALSE,
+                  row.names=1) %>% tbl_df
 
 ## make data for this program
 usn_feats <- attrs %>% select(Indicator, usn_feat) %>% na.omit() %>%
     filter(usn_feat==1) %>% .$Indicator
 
 
-usn.wide <- usn0 %>% select(Country, Indicator, zscore_) %>%
-    filter(Indicator %in% usn_feats) %>% 
-    spread(Indicator, zscore_) %>%
+names(usn0) %<>% tolower
+
+usn.wide <- usn0 %>% left_join(., codes, by="indicator") %>%
+    select(country, indicator, label_short, zscore_) %>%
+    filter(indicator %in% usn_feats) %>% select(-indicator) 
+
+%>%
+    spread(label_short, zscore_) 
+
+
+%>%
     mutate_each(funs(na.zero(.)))
 
-## back from wide to long to include imputed vars for each indicator
+## back from wide to long to include imputed values for each indicator
 usn1 <- usn.wide %>% gather("Indicator", "zscore_", -1)
 
 
@@ -33,8 +43,6 @@ usn1 <- usn.wide %>% gather("Indicator", "zscore_", -1)
 ## ============================================================================
 ## Explore
 ## ============================================================================
-
-
 ## # of indicators by country. max = 38
 usn0 %>% group_by(Country) %>% tally %>% arrange(n)
 
@@ -45,7 +53,7 @@ library(corrplot)
 dat <- usn.wide
 M <-  cor(dat[,-1])
 
-png("../../output/2-corrs.png", width=800, height=800)
+png("../../output/tmp_2-corrs.png", width=800, height=800)
 corrplot(M, method="ellipse", order="FPC")
 dev.off()
 

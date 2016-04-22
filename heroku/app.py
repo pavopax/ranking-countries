@@ -85,16 +85,16 @@ def graph():
     ind1 = app.vars['i1']
     ind2 = app.vars['i2']
 
-    query = """SELECT "Country", "Indicator", "zscore" from usn WHERE "Indicator" IN (%s, %s);"""
+    query = """SELECT country, indicator, zscore from usn WHERE indicator IN (%s, %s);"""
     cursor.execute(query, (ind1, ind2) )
 
-    df=pd.DataFrame(cursor.fetchall(), columns=['Country', 'Indicator',
+    df=pd.DataFrame(cursor.fetchall(), columns=['country', 'indicator',
                                                 'zscore'])
-    df = df.pivot('Country', 'Indicator')
+    df = df.pivot('country', 'indicator')
     df = df.zscore
 
     # get indicator labels for axes
-    query = """SELECT "Indicator", "Label" from codes WHERE "Indicator" IN (%s, %s);"""
+    query = """SELECT indicator, label from codes WHERE indicator IN (%s, %s);"""
     cursor.execute(query, (ind1, ind2) )
     labs = cursor.fetchall()
 
