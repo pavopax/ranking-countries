@@ -14,6 +14,11 @@ from forms import IndicatorForm  # my forms.py file
 
 # initialization
 app = Flask(__name__)
+
+# https://realpython.com/blog/python/flask-by-example-part-1-project-setup/
+app.config.from_object(os.environ['APP_SETTINGS'])
+print(os.environ['APP_SETTINGS'])
+
 app.config.update(
     DEBUG=True,
 )
