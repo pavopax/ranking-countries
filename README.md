@@ -17,6 +17,8 @@ My data is from:
 
 http://data.worldbank.org
 
+http://reports.weforum.org/global-competitiveness-report-2014-2015/
+
 
 Toolkit 
 ===============================================================================
@@ -32,7 +34,7 @@ python
 Postgres <img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="24px"> database
 *  deployed remotely, interacts with Flask (see the [Data Explorer](http://indicated.herokuapp.com/explorer) )
 
-
+Data
 
 
 USNWR - methodology notes
