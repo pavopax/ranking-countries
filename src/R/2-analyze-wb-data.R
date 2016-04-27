@@ -18,25 +18,18 @@ codes <- read.csv("../../cache/codes.csv", stringsAsFactors=FALSE,
                   row.names=1) %>% tbl_df
 
 ## make data for this program
-usn_feats <- attrs %>% select(Indicator, usn_feat) %>% na.omit() %>%
-    filter(usn_feat==1) %>% .$Indicator
+usn_feats <- attrs %>% select(indicator, usn_feat) %>% na.omit() %>%
+    filter(usn_feat==1) %>% .$indicator
 
-
-names(usn0) %<>% tolower
 
 usn.wide <- usn0 %>% left_join(., codes, by="indicator") %>%
-    select(country, indicator, label_short, zscore_) %>%
-    filter(indicator %in% usn_feats) %>% select(-indicator) 
-
-%>%
-    spread(label_short, zscore_) 
-
-
-%>%
+    select(country, indicator, label_short, zscore) %>%
+    filter(indicator %in% usn_feats) %>% select(-indicator) %>%
+    spread(label_short, zscore) %>%
     mutate_each(funs(na.zero(.)))
 
 ## back from wide to long to include imputed values for each indicator
-usn1 <- usn.wide %>% gather("Indicator", "zscore_", -1)
+usn1 <- usn.wide %>% gather("indicator", "zscore_", -1)
 
 
 
@@ -44,7 +37,7 @@ usn1 <- usn.wide %>% gather("Indicator", "zscore_", -1)
 ## Explore
 ## ============================================================================
 ## # of indicators by country. max = 38
-usn0 %>% group_by(Country) %>% tally %>% arrange(n)
+usn0 %>% group_by(country) %>% tally %>% arrange(n)
 
 ## amazing
 ## https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
@@ -53,7 +46,7 @@ library(corrplot)
 dat <- usn.wide
 M <-  cor(dat[,-1])
 
-png("../../output/tmp_2-corrs.png", width=800, height=800)
+png("../../output/2-corrs.png", width=800, height=800)
 corrplot(M, method="ellipse", order="FPC")
 dev.off()
 
@@ -69,8 +62,8 @@ usn1 %>% group_by(Country) %>% arrange(zscore_)  %>% slice(1:nn) %>%
 
 ## all indicators hers
 my.indics <- names(usn.wide)[-1]
-my_indicators <- attrs %>% filter(Indicator %in% my.indics) %>%
-    select(Group, Attribute, Indicator, Label) 
+my_indicators <- attrs %>% filter(indicator %in% my.indics) %>%
+    select(Group, Attribute, indicator, Label) 
 
 write_my_csv("my_indicators")
 
@@ -104,7 +97,7 @@ ranked %>% select(Country, zsum) %>% as.data.frame
 ## USN
 
 ## TODO: use zscore here!
-usnX1 <- usn1 %>% spread(Indicator, zscore_) 
+usnX1 <- usn1 %>% spread(indicator, zscore_) 
 usnX <- usnX1 %>% select(-Country)
 
 pca <- princomp(usnX[,-1], cor=T)

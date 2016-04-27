@@ -162,7 +162,7 @@ classes <- df_meta0 %>% select(country, income.group, region)
 ## OUTPUT CACHED DATASETS
 ## ============================================================================
 codes <- attrs %>% select(indicator, label) %>%
-    na.omit %>%
+    filter(!is.na(indicator)) %>%
     mutate(label_short=gsub("( \\(.+\\))", "", label, perl = TRUE)) %>%
     select(indicator, label_short, label) %>% 
     arrange(indicator)
