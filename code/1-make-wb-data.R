@@ -1,19 +1,27 @@
 ## create SQL database + cached data
 library(DBI)                            #first, before dplyr (bug?)
-source("header.R")                      #source functions and load packages
-source("R/functions.R")
+source("header.R") 
+source("functions.R")
 
+print("MAKE WORLD BANK DATA...")
 df_input0 <- read.csv("../data/8832f489-b226-41cb-ac28-59241cc84533_Data.csv",
                       stringsAsFactors=FALSE) %>%
-    tbl_df  %>% filter(Series.Code != "") %>%
-    rename(Year=X...Time.Code, Indicator=Series.Code)
+    tbl_df %>%
+    filter(Series.Code != "") %>%
+    rename(Indicator=Series.Code)
+## first name is weird, rename() doesn't work from command line
+names(df_input0)[1] <- "Year"
+
 df_meta0 <- read.csv("../data/8832f489-b226-41cb-ac28-59241cc84533_Country - Metadata.csv",
                      stringsAsFactors=FALSE) %>%
-    tbl_df %>% rename(Country.Code=X...Code) %>%
+    tbl_df %>%
+    #rename(Country.Code=X...Code) %>%
     rename(Country=Short.Name)
+## first name is weird, rename() doesn't work from command line
+names(df_meta0)[1] <- "Country.Code"
+
 attrs <- read.csv("../data/map-categories-attributes-final.csv",
                   stringsAsFactors=FALSE, na.strings="") %>% tbl_df
-
 
 names(df_input0) %<>% tolower
 names(df_meta0) %<>% tolower
@@ -44,13 +52,9 @@ country_names <- df_meta0 %>% select(country.code, country)
 cats <- df_meta0 %>% filter(income.group=="") %>%
     filter(long.name !="") %>% .$long.name
 
-## ============================================================================
-## MAIN DATASETS
-## ============================================================================
-
-## 248, includes "cats"
+## 248, includes some groups
 ## 215 countries
-## 60 USN
+## 60 USN countries
 dffull <- left_join(country_names, df_input0, by="country.code") %>%
     select(-country.code) %>% 
     arrange(country, year, indicator) %>%
@@ -58,46 +62,6 @@ dffull <- left_join(country_names, df_input0, by="country.code") %>%
 dfall <- dffull %>% filter(!(country %in% cats))
 dfusn <- dffull %>% filter(country %in% usn60)
 
-# saveRDS(dfall, "dfall.rds")
-# saveRDS(dfusn, "dfusn.rds")
-
-
-## ============================================================================
-## EXPLORE INDICATORS
-## ============================================================================
-## which year has most data?
-yrs <- dfusn$year %>% unique
-for (year in yrs){
-    x <- dfusn %>% filter(year==year) %>% group_by(country) %>%
-        na.omit %>% dim
-    print(c(year, x[1]))
-}
-
-## available indicators (out of 60 countries)
-indic_usn <- get_indicator_counts(dfusn)
-indic_usn %>% spread(year, n)
-
-## available indicators (out of all 248 countries)
-indic_all <- get_indicator_counts(dfall)
-indic_all %>% spread(year, n) %>% as.data.frame
-
-## sum the year columns to find max # of available indicators
-dfall %>% group_by(year, indicator) %>%
-    na.omit() %>% summarise(n=n())%>% arrange(year, desc(n)) %>%
-    spread(year, n) %>% select(-indicator) %>%
-    summarise_each(funs(sum(., na.rm = TRUE)))
-
-
-## "good" data availability. using 2010
-## have: 31 indicators with good data for 60 USN countries
-## have: 24 indicators with good data for all 248 countries
-f <- (2/3)*60
-series1 <- indic_usn %>% filter(year==2010 & n>=f) %>% .$indicator 
-indic_usn_good <- dfusn %>% filter(year==2010 & indicator %in% series1)
-
-f <- (2/3)*248
-series2 <- indic_all %>% filter(year==2010 & n>=f) %>% .$indicator
-indic_all_good <- dfall %>% filter(year==2010 & indicator %in% series2)
 
 
 ## subset to LATEST available data, if any
@@ -142,25 +106,11 @@ latest_full <- left_join(latest_full, inv, by="indicator") %>%
                          -zscore_orig, zscore_orig)) %>%
     select(-need_inverse)
 
-## check
-latest_usn %>%
-    filter(indicator=="IC.BUS.EASE.XQ") %>%
-    arrange(zscore_orig)
-
-
-## ============================================================================
-## EXPLORE potential classification (Y) variables
-## ============================================================================
-cats
 
 classes <- df_meta0 %>% select(country, income.group, region)
 
 
-
-
-## ============================================================================
-## OUTPUT CACHED DATASETS
-## ============================================================================
+print("OUTPUT CACHED DATASETS...")
 codes <- attrs %>% select(indicator, label) %>%
     filter(!is.na(indicator)) %>%
     mutate(label_short=gsub("( \\(.+\\))", "", label, perl = TRUE)) %>%
@@ -175,24 +125,13 @@ write_my_csv("attrs")
 write_my_csv("codes")
 
 
-## ============================================================================
-## CREATE DATABASE
-## ============================================================================
 
-## library("sqldf")
-## db <- dbConnect(SQLite(), dbname="../db/wb.sqlite")
-## dbWriteTable(conn=con, name="latest_usn", value=as.data.frame(latest_usn))
-
-## connect to python:
-# https://devcenter.heroku.com/articles/heroku-postgresql#provisioning-the-add-on
-
-
+print("CREATE DATABASE...")
 ## need to have open Postgres.app 
 con <- dbConnect(RPostgres::Postgres(), dbname="wb_indicators")
 dbWriteTable(conn=con, name="usn", value=as.data.frame(latest_usn),
              overwrite=TRUE)
 dbWriteTable(conn=con, name="codes", value=as.data.frame(codes),
              overwrite=TRUE)
-#dbWriteTable(conn=con, name="test", value=as.data.frame(latest_usn[1:40,]))
-dbDisconnect(RPostgres::Postgres(), dbname="wb_indicators")
-
+dbDisconnect(con)
+print("DONE")

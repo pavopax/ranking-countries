@@ -1,5 +1,5 @@
-source("../header.R")                      #source functions and load packages
-source("functions.R")
+source("../header.R") 
+source("../functions.R")
 
 ## usn: 60 usn countries
 ## all: all countries
@@ -38,17 +38,6 @@ usn1 <- usn.wide %>% gather("indicator", "zscore_", -1)
 ## ============================================================================
 ## # of indicators by country. max = 38
 usn0 %>% group_by(country) %>% tally %>% arrange(n)
-
-## amazing
-## https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
-library(corrplot)                       
-
-dat <- usn.wide
-M <-  cor(dat[,-1])
-
-png("../../output/2-corrs.png", width=800, height=800)
-corrplot(M, method="ellipse", order="FPC")
-dev.off()
 
 
 ## what is each country good at? ... bad at? 

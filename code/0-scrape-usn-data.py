@@ -1,4 +1,4 @@
-# scrapte USN's top 60 countries
+# scrape USN's top 60 countries
 import requests
 import re
 import warnings
@@ -94,10 +94,10 @@ print dfc.head()
 dfa = pd.DataFrame.from_records(attributes, columns=AttributeStore._fields)
 print dfa
 
-outfile = open("../../data/countries.pickle", "wb")
+outfile = open("../cache/countries.pickle", "wb")
 pickle.dump(dfc, outfile)
 outfile.close()
 
-outfile = open("../../data/attributes.pickle", "wb")
+outfile = open("../cache/attributes.pickle", "wb")
 pickle.dump(dfa, outfile)
 outfile.close()
