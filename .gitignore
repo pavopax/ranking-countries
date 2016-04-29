@@ -3,3 +3,5 @@ scratch.*
 *.pyc
 *#
 .#*
+*.Rhistory
+*.RData

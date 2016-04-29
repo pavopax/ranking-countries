@@ -47,11 +47,14 @@ indicators = [('AG.LND.TOTL.K2', 'Land area (sq. km)'),
 class IndicatorForm(Form):
     #title = TextField("Custom Plot Title",[validators .Required("IMPORTANT NOTE: Please enter a title. <<< ")])
    
-    indicator1 = SelectField('Vertical (Y) Axis',
+
+    indicator1 = SelectField('First Indicator',
                            choices = indicators)
 
-    indicator2 = SelectField('Horizontal (X) Axis',
+    indicator2 = SelectField('Second Indicator',
                            choices = indicators)
+
+
 
     title = TextField("Add a Custom Plot Title", default="My Fancy Plot Title")
 

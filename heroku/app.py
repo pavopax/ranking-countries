@@ -7,17 +7,19 @@ import psycopg2
 import urlparse
 
 from flask import Flask, render_template, send_from_directory, request,redirect, flash
-from bokeh.plotting import figure
+from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
+from bokeh.models import HoverTool, BoxSelectTool
 #from flask.ext.sqlalchemy import SQLAlchemy
+import sqlalchemy
 from forms import IndicatorForm  # my forms.py file
 
 # initialization
 app = Flask(__name__)
 
 # https://realpython.com/blog/python/flask-by-example-part-1-project-setup/
-app.config.from_object(os.environ['APP_SETTINGS'])
-print(os.environ['APP_SETTINGS'])
+# app.config.from_object(os.environ['APP_SETTINGS'])
+# print(os.environ['APP_SETTINGS'])
 
 app.config.update(
     DEBUG=True,
@@ -101,15 +103,29 @@ def graph():
     # get indicator labels for axes
     query = """SELECT indicator, label from codes WHERE indicator IN (%s, %s);"""
     cursor.execute(query, (ind1, ind2) )
-    labs = cursor.fetchall()
+    labs = dict(cursor.fetchall())
 
     conn.commit();
     conn.close();
 
+    hover = HoverTool(
+        tooltips=[
+            ("Country", "@country"),
+            (labs[ind1], "$x"),
+            (labs[ind2], "$y"),
+            
+        ]
+    )
+
+    data_source = ColumnDataSource(data=df)
+
+    # NOTE: use `labs` to correctly match label with indicator,
+    # and preserve user-specified indicator order
     p = figure(width=700, height=500, title = app.vars['title'],
-	       x_axis_label = labs[0][1], y_axis_label = labs[1][1])
-    p.circle(x=df[df.columns[0]], y=df[df.columns[1]], size=10,
-	     color="navy", alpha=0.5)
+	       x_axis_label = labs[ind1], y_axis_label = labs[ind2],
+               tools=[hover])
+    p.circle(x=df[ind1], y=df[ind2], size=10,
+	     color="navy", alpha=0.5, source=data_source)
     p.xaxis.axis_label_text_font_size = "10pt"
     p.yaxis.axis_label_text_font_size = "10pt"
 
