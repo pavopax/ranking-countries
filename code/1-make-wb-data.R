@@ -1,5 +1,4 @@
 ## create SQL database + cached data
-library(DBI)                            #first, before dplyr (bug?)
 source("header.R") 
 source("functions.R")
 
@@ -60,7 +59,6 @@ dffull <- left_join(country_names, df_input0, by="country.code") %>%
     arrange(country, year, indicator) %>%
     filter(country != "")
 dfall <- dffull %>% filter(!(country %in% cats))
-dfusn <- dffull %>% filter(country %in% usn60)
 
 
 
@@ -73,11 +71,6 @@ codes1 <- get_latest_available(dfusn) %>% group_by(indicator) %>%
 
 ## scale needs [,] so it doesn't return attributes
 ## http://jeromyanglim.tumblr.com/post/72622792597/how-to-use-scale-function-in-r-to-centre
-latest_usn <- get_latest_available(dfusn) %>%
-    filter(indicator %in% codes1) %>%
-    group_by(indicator) %>%
-    mutate(zscore_orig=scale(value, center = TRUE, scale=TRUE)[,]) %>%
-    ungroup()
 latest_all <- get_latest_available(dfall) %>%
     filter(indicator %in% codes1) %>%
     group_by(indicator) %>%
@@ -93,45 +86,30 @@ latest_full <- get_latest_available(dffull) %>%
 ## INVERT "negative" variables to make them positive
 inv <- attrs %>% select(indicator, need_inverse) %>% na.omit
 
-latest_usn <- left_join(latest_usn, inv, by="indicator") %>%
+wb_data <- left_join(latest_all, inv, by="indicator") %>%
     mutate(zscore=ifelse( (is.na(need_inverse) %in% FALSE),
                          -zscore_orig, zscore_orig)) %>%
     select(-need_inverse)
-latest_all <- left_join(latest_all, inv, by="indicator") %>%
-    mutate(zscore=ifelse( (is.na(need_inverse) %in% FALSE),
-                         -zscore_orig, zscore_orig)) %>%
-    select(-need_inverse)
-latest_full <- left_join(latest_full, inv, by="indicator") %>%
+wb_data_plus <- left_join(latest_full, inv, by="indicator") %>%
     mutate(zscore=ifelse( (is.na(need_inverse) %in% FALSE)
                          -zscore_orig, zscore_orig)) %>%
     select(-need_inverse)
 
+wb_entities <- df_meta0 %>% select(country, income.group, region)
 
-classes <- df_meta0 %>% select(country, income.group, region)
-
-
-print("OUTPUT CACHED DATASETS...")
-codes <- attrs %>% select(indicator, label) %>%
+wb_metadata <- attrs %>% select(indicator, label) %>%
     filter(!is.na(indicator)) %>%
     mutate(label_short=gsub("( \\(.+\\))", "", label, perl = TRUE)) %>%
     select(indicator, label_short, label) %>% 
     arrange(indicator)
 
-write_my_csv("latest_usn")
-write_my_csv("latest_all")
-write_my_csv("latest_full")
-write_my_csv("classes")
-write_my_csv("attrs")
-write_my_csv("codes")
 
-
-
-print("CREATE DATABASE...")
-## need to have open Postgres.app 
-con <- dbConnect(RPostgres::Postgres(), dbname="wb_indicators")
-dbWriteTable(conn=con, name="usn", value=as.data.frame(latest_usn),
-             overwrite=TRUE)
-dbWriteTable(conn=con, name="codes", value=as.data.frame(codes),
-             overwrite=TRUE)
-dbDisconnect(con)
+print("OUTPUT TO /CACHE...")
+saveRDS(wb_data, "../cache/wb_data.rds")
+saveRDS(wb_data_plus, "../cache/wb_data_plus.rds")
+saveRDS(wb_metadata, "../cache/wb_metadata.rds")
+saveRDS(wb_entities, "../cache/wb_entities.rds")
+saveRDS(usn60, "../cache/usn60.rds")
 print("DONE")
+
+
