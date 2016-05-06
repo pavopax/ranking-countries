@@ -58,7 +58,9 @@ wef_metadata$label_short <- gsub("( \\(.+\\))", "", wef_metadata$label) %>%
     gsub("(,.+)", "", .) %>% 
     gsub("\\*", "", .)
 
-metadata <- bind_rows(wef_metadata, wb_metadata)
+metadata <- bind_rows(wef_metadata, wb_metadata) %>%
+    select(source, indicator, label_short, label, description) %>%
+    arrange(source, indicator)
 
 ## TODO: standardize the entities
 ## c() the entities with my indicator$countries,
