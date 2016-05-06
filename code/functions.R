@@ -31,7 +31,8 @@ get_latest_available <- function(data){
 ##' @param object_name your object as string
 ##' @return csv with same name as object name, written to path
 ##' @author Paul
-write_my_csv <- function(object_name, path="../cache/"){
+write_my_csv <- function(object_name, out_name, path="../cache/"){
+    if(missing(out_name)) {out_name <- object_name}
     write.csv(get(object_name), file=paste0(path, object_name, ".csv"))
 }
 
