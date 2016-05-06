@@ -56,11 +56,13 @@ wb_metadata$source <- "WB"
 ## to match label_short in WB
 wef_metadata$label_short <- gsub("( \\(.+\\))", "", wef_metadata$label) %>%
     gsub("(,.+)", "", .) %>% 
-    gsub("\\*", "", .)
+    gsub("\\*", "", .) 
+
 
 metadata <- bind_rows(wef_metadata, wb_metadata) %>%
     select(source, indicator, label_short, label, description) %>%
     arrange(source, indicator)
+metadata$label_short %<>% substr(., 1, 60)
 
 ## TODO: standardize the entities
 ## c() the entities with my indicator$countries,
