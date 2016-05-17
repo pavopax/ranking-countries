@@ -1,5 +1,14 @@
-1. run scripts that begin with numbers, in that order
+run in this order (note extension):
 
-2. then run any non-numbered scripts, in any order
+    scrape-usn-data.py
+	make-wb-data.R
+	make-weforum-data.R
+	make-wingia-data.py
+	make-database.R
 
-programs in subdirectories are exploratory, for now
+these are helper files:
+
+	functions.R
+	header.R
+
+other programs ./ and in subdirectories are exploratory, for now

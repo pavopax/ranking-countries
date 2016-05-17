@@ -70,7 +70,7 @@ metadata$label_short %<>% substr(., 1, 60)
 
 
 ## ============================================================================
-## SAVE TO DATABASE
+## SAVE TO DATABASE (and /cache)
 ## ============================================================================
 con <- dbConnect(RPostgres::Postgres(), dbname="indicators")
 dbWriteTable(conn=con, name="indicators", value=as.data.frame(indicators),
@@ -78,3 +78,6 @@ dbWriteTable(conn=con, name="indicators", value=as.data.frame(indicators),
 dbWriteTable(conn=con, name="metadata", value=as.data.frame(metadata),
              overwrite=TRUE)
 dbDisconnect(con)
+
+saveRDS(indicators, "../cache/indicators.rds")
+saveRDS(metadata, "../cache/metadata.rds")

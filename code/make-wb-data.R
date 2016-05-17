@@ -1,4 +1,3 @@
-## create SQL database + cached data
 source("header.R") 
 source("functions.R")
 
