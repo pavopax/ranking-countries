@@ -41,7 +41,7 @@ df_happiness = pd.DataFrame.from_records(happiness, columns=happiness_cols)
 df_econ_optimism = pd.DataFrame.from_records(econ_optimism, columns=econ_optimism_cols)
 
 # "global average" is in different cases...
-df_hope['country'] = df_hope['country'].str.lower()
+df_hope['country'] = df_hope['country'].str.replace("DR. ", "DR.").str.lower()
 df_econ_optimism['country'] = df_econ_optimism['country'].str.lower()
 df_happiness['country'] = df_happiness['country'].str.lower()
 
