@@ -1,39 +1,40 @@
 library(DBI)
+library(tibble)                         # for frame_data()
 source("header.R")
 source("functions.R")
 
-usn60 <- readRDS("../cache/usn60.rds")
 
+usn60 <- readRDS("../cache/usn60.rds")
 wb_data <- readRDS("../cache/wb_data.rds")
 wb_metadata <- readRDS("../cache/wb_metadata.rds")
 wb_entities <- readRDS("../cache/wb_entities.rds")
-
 wef_data <- readRDS("../cache/wef_data.rds")
 wef_metadata <- readRDS("../cache/wef_metadata.rds")
 wef_entities <- readRDS("../cache/wef_entities.rds")
-
+wingia_data <- readRDS("../cache/wingia_data.rds")
 
 ## ============================================================================
 ## DATA SUMMARIES
 ## ============================================================================
 wb_data %>% dim
 wef_data %>% dim
+wingia_data %>% dim
 
 wb_data$indicator %>% unique %>% length
 wef_data$indicator %>% unique %>% length
 
 wb_data$country %>% unique %>% length
 wef_data$country %>% unique %>% length
-
+wingia_data$country %>% unique %>% length
 
 ## ============================================================================
 ## STANDARADIZE AND MERGE THE 2 DATASETS (WB + WEF)
 ## ============================================================================
 indicators <- bind_rows(
     wef_data,
-    wb_data %>% select(country, indicator, value, zscore)
+    wb_data %>% select(country, indicator, value, zscore),
+    wingia_data
 ) %>% arrange(country, indicator)
-
 
 indicators$country %<>%
     iconv(., "latin1", "ASCII", sub="") %>%
@@ -46,12 +47,24 @@ indicators$country %<>%
     gsub(".*Leste.*", "Timor Leste", .) %>%
     gsub("Korea..Rep", "Korea", .) %>% 
     gsub("Korea..Rep", "Korea", .) %>%
-    gsub("Brunei Darussalam", "Brunei", .)
+    gsub("Brunei Darussalam", "Brunei", .) %>%
+    gsub("Bosnia And", "Bosnia and", .) %>%
+    gsub("Congo, Democratic.*", "Congo DR", .) %>%
+    gsub("Dem. Rep. Congo", "Congo DR", .)
 
 
-## THE METADATA
+## MAKE METADATA
+wingia_metadata <- frame_data(
+    ~indicator, ~label_short, 
+    "net_hope", "Net hope", 
+    "net_happiness", "Net happiness",
+    "net_econ_optimism", "Net economic optimism"
+)
+
+wingia_metadata$source <- "WIN/Gallup"
 wef_metadata$source <- "WEF"
 wb_metadata$source <- "WB"
+
 
 ## to match label_short in WB
 wef_metadata$label_short <- gsub("( \\(.+\\))", "", wef_metadata$label) %>%

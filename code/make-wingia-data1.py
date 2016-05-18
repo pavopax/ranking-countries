@@ -54,7 +54,7 @@ wingia = pd.merge(m12, m3, how='left', on='country')
 wingia['country'] = wingia['country'].str.title()
 
 
-wingia.to_csv("../cache/wingia_wide.csv")
+wingia.to_csv("../cache/wingia_data_wide.csv")
 df_hope.to_csv("../cache/wingia_hope.csv")
 df_happiness.to_csv("../cache/wingia_happiness.csv")
 df_econ_optimism.to_csv("../cache/wingia_econ_optimism.csv")
