@@ -1,5 +1,5 @@
-source("header.R") 
-source("functions.R")
+source("helpers/header.R") 
+source("helpers/functions.R")
 
 print("CONTINUE MAKE WINGIA DATA...")
 df0 <- read.csv("../cache/wingia_data_wide.csv", row.names=1,
