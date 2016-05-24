@@ -1,6 +1,6 @@
 library(gdata)
-source("header.R")
-source("functions.R")
+source("helpers/header.R")
+source("helpers/functions.R")
 
 print("MAKE WORLD ECONOMIC FORUM DATA...")
 ## takes forever... should export to csv from excel...

@@ -1,7 +1,7 @@
 library(DBI)
 library(tibble)                         # for frame_data()
-source("header.R")
-source("functions.R")
+source("helpers/header.R")
+source("helpers/functions.R")
 
 
 usn60 <- readRDS("../cache/usn60.rds")

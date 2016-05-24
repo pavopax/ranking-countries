@@ -1,5 +1,5 @@
-source("header.R") 
-source("functions.R")
+source("helpers/header.R") 
+source("helpers/functions.R")
 
 ## ============================================================================
 ## make datasets
@@ -21,6 +21,8 @@ usn.wide <- usn0 %>% left_join(., codes, by="indicator") %>%
     spread(label_short, zscore) %>%
     mutate_each(funs(na.zero(.)))
 
+wingia <- readRDS("../cache/wingia_data.rds")
+
 ## ============================================================================
 ## make graphics
 ## ============================================================================
@@ -33,5 +35,15 @@ dat <- usn.wide
 M <-  cor(dat[,-1])
 
 png("../output/3-corrs.png", width=800, height=800)
+corrplot(M, method="ellipse", order="FPC")
+dev.off()
+
+
+## WINGIA
+dat <- wingia %>% select(country, indicator, zscore) %>%
+    spread(indicator, zscore)
+M <- cor(dat[,-1], use='complete')
+
+png("../output/corr-wingia.png", width=800, height=800)
 corrplot(M, method="ellipse", order="FPC")
 dev.off()
