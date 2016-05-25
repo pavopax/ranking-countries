@@ -5,3 +5,6 @@ scratch.*
 .#*
 *.Rhistory
 *.RData
+cache/*rds
+cache/*csv
+cache/archive/*
