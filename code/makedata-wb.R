@@ -4,11 +4,16 @@ source("helpers/functions.R")
 df_input0 <- read.csv("../data/8832f489-b226-41cb-ac28-59241cc84533_Data.csv",
                       stringsAsFactors=FALSE) %>%
     filter(Series.Code != "") %>%
-    rename(Year=X...Time.Code,Indicator=Series.Code) %>% tbl_df
+    rename(Indicator=Series.Code) %>% tbl_df
+
+## doesn't work from command line if I include it above, so doing it here:
+names(df_input0)[1] <- "Year"
 
 df_meta0 <- read.csv("../data/8832f489-b226-41cb-ac28-59241cc84533_Country - Metadata.csv",
                      stringsAsFactors=FALSE) %>%
-    rename(Country.Code=X...Code, Country=Short.Name) %>% tbl_df
+    rename(Country=Short.Name) %>% tbl_df
+names(df_meta0)[1] <- "Country.Code"
+
 
 attrs <- read.csv("../data/map-categories-attributes-final.csv",
                   stringsAsFactors=FALSE, na.strings="") %>% tbl_df
@@ -41,6 +46,7 @@ country_names <- df_meta0 %>% select(country.code, country)
 ## cats = smaller groupings from this dataset
 cats <- df_meta0 %>% filter(income.group=="") %>%
     filter(long.name !="") %>% .$long.name
+cats <- c(cats, "Fragile and conflict affected situations") #in main dataset
 
 ## FULL: 248 includes some groups
 ## ALL:  215 countries
@@ -102,3 +108,5 @@ saveRDS(wb_data, "../cache/wb_data.rds")
 saveRDS(wb_metadata, "../cache/wb_metadata.rds")
 saveRDS(wb_entities, "../cache/wb_entities.rds")
 saveRDS(usn60, "../cache/usn60.rds")
+
+print("DONE.")

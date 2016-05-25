@@ -29,10 +29,17 @@ wb_data$indicator %>% lengths
 wef_data$indicator %>% lengths
 wingia_data$indicator %>% lengths
 
+print("Indicators-subset")
+wb_data %>% filter(subset>0) %>% .$indicator %>% lengths
+wef_data %>% filter(subset>0) %>% .$indicator %>% lengths
+wingia_data %>% filter(subset>0) %>% .$indicator %>% lengths
+
 print("Countries")
 wb_data$country  %>% lengths
 wef_data$country %>% lengths
 wingia_data$country %>% lengths
+
+
 
 
 ## ============================================================================
