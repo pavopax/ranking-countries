@@ -44,7 +44,7 @@ write_my_csv <- function(object_name, out_name, path="../cache/"){
 ##' @title 
 ##' @param table : table() of Y's: predictions x observations 
 ##' @return value [0,1]
-##' @author Pawel
+##' @author Paul
 missclass_rate <- function(table){
     return (sum(table)-tr(table))/sum(table)
 }
@@ -55,8 +55,21 @@ missclass_rate <- function(table){
 ##' @title 
 ##' @param x 
 ##' @return 
-##' @author Pawel
+##' @author Paul
 na.zero <- function (x, n=0) {
     x[is.na(x)] <- n
     return(x)
+}
+
+
+
+##' .. content for \description{} (no empty lines) ..
+##' .. content for \details{} ..
+##' @title 
+##' @param x a vector
+##' @return length, unique length
+##' @author Paul
+lenghts <- function(x) {
+    return (c(x %>% length,
+              x %>% length %>% unique))
 }
