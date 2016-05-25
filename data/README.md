@@ -13,21 +13,33 @@ WIN/Gallup International - End of the Year Survey
 [http://www.wingia.com/en/services/end_of_year_survey_2015/global_regional_results/9/53/](http://www.wingia.com/en/services/end_of_year_survey_2015/global_regional_results/9/53/)
 
 
+Data Management Details
+===============================================================================
+Raw dataset version control uses [git-annex](https://git-annex.branchable.com),
+which is useful for tracking large files.
 
-Details
+
+Dataset Details
 ===============================================================================
 
 World Bank Indicators
 
 * selected indicators from past 10 years, used most recent available
+* see file `88*`
 
 
 World Economic Forum
 
-* Data extracted from Excel file
+* see file `GCI*`
+
 
 WINGIA data:
 
-* manal copy-paste from PDF to text file:
+* manual copy-paste from PDF to text file:
 * http://www.wingia.com/web/files/richeditor/filemanager/WINGIA_Final_Press_Release_EOY_2015.pdf
+* see files `wingia*`
+
+
+Other data:
+* map-categories-attributes-final.csv - my export, for custom subsets
 
