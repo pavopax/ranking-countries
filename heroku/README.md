@@ -50,7 +50,11 @@ Source
 http://www.tutorialspoint.com/flask/flask_wtf.htm
 
 
-tutorial:
+tutorials:
 `http://blog.shea.io/lightweight-python-apps-with-flask-twitter-bootstrap-and-heroku/`
 
+Jquery (for nteractive forms on the same page):
+http://flask.pocoo.org/docs/0.10/patterns/jquery/
+
 favicon is my own, converted at: `http://www.favicon.cc/`
+

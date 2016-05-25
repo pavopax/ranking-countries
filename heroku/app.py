@@ -6,10 +6,14 @@ import numpy as np
 import psycopg2
 import urlparse
 
-from flask import Flask, render_template, send_from_directory, request,redirect, flash
+from math import ceil, floor
+
+from flask import Flask, render_template, send_from_directory, request, redirect, flash, jsonify
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
 from bokeh.models import HoverTool, BoxSelectTool
+from bokeh.resources import INLINE
+
 #from flask.ext.sqlalchemy import SQLAlchemy
 import sqlalchemy
 from forms import IndicatorForm  # my forms.py file
@@ -119,6 +123,18 @@ def graph():
 
     data_source = ColumnDataSource(data=df)
 
+    # add regression line
+    # to prevent errors, use idx:
+    idx = np.isfinite(df[ind1]) & np.isfinite(df[ind2])
+    xx = df[ind1].ix[idx]
+    yy = df[ind2].ix[idx]
+
+    regression = np.polyfit(xx, yy, 1)
+    r_x, r_y = zip(*((i, i*regression[0] + regression[1]) for i in range(
+        int(floor(min( min(xx), min(yy) ))),
+        int(ceil(max( max(xx), max(yy)))+1)
+        )))
+
     # NOTE: use `labs` to correctly match label with indicator,
     # and preserve user-specified indicator order
     p = figure(width=700, height=500, title = app.vars['title'],
@@ -126,6 +142,7 @@ def graph():
                tools=[hover])
     p.circle(x=df[ind1], y=df[ind2], size=10,
 	     color="navy", alpha=0.5, source=data_source)
+    p.line(r_x, r_y, color="coral", line_width=3)
     p.xaxis.axis_label_text_font_size = "10pt"
     p.yaxis.axis_label_text_font_size = "10pt"
 
@@ -159,6 +176,69 @@ def week1():
     return render_template('week1.html')
 
 
+# temp: for testing fvrt.html
+@app.route("/add_numbers")
+def add_numbers():
+    a = request.args.get('a', 0, type=int)
+    b = request.args.get('b', 0, type=int)
+    return jsonify(result = a+b)
+
+
+# temp: for testing polynomial.html
+def getitem(obj, item, default):
+    if item not in obj:
+        return default
+    else:
+        return obj[item]
+        
+
+# temp: for testing polynomial.html
+colors = {
+    'Black': '#000000',
+    'Red':   '#FF0000',
+    'Green': '#00FF00',
+    'Blue':  '#0000FF',
+}
+
+@app.route("/polynomial")
+def polynomial():
+    """ embed simple polynomial chart
+    """
+    args = request.args
+    form = IndicatorForm()
+
+    # get all the form arguments in the url with defaults
+    color = colors[getitem(args, 'color', 'Black')]
+    _from = int(getitem(args, '_from', 0))
+    to = int(getitem(args, 'to', '10'))
+
+    # create a polynomial line graph
+    x = list(range(_from, to+1))
+    fig = figure(title="Polynomials!")
+    fig.line(x, [i ** 3 for i in x], color=color, line_width=2)
+
+    # Configure resources to include BokehJS inline in the document
+    # for more details, see:
+    #   http://bokeh.pydata.org/en/latest/docs/reference/resources_embedding.html#bokeh-embed
+    js_resources = INLINE.render_js()
+    css_resources = INLINE.render_css()
+
+    # for more details, see:
+    #   http://bokeh.pydata.org/en/latest/docs/user_guide/embedding.html#components
+    script, div = components(fig, INLINE)
+
+    return render_template('temp_embed.html',
+                           plot_script=script, plot_div=div,
+                           js_resources=js_resources,
+                           css_resources=css_resources,
+                           color=color, _from=_from, to=to,
+                           form=form)
+
+
+@app.route("/fvrt")
+def fvrt():
+    return render_template('fvrt.html')
+
 @app.route("/testing")
 def testing():
     """ this is a testing page """
@@ -169,12 +249,3 @@ def testing():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
-    
-
-
-
-
-
-
-
