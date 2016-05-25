@@ -1,22 +1,14 @@
 source("helpers/header.R") 
 source("helpers/functions.R")
 
-print("MAKE WORLD BANK DATA...")
 df_input0 <- read.csv("../data/8832f489-b226-41cb-ac28-59241cc84533_Data.csv",
                       stringsAsFactors=FALSE) %>%
-    tbl_df %>%
     filter(Series.Code != "") %>%
-    rename(Indicator=Series.Code)
-## first name is weird, rename() doesn't work from command line
-names(df_input0)[1] <- "Year"
+    rename(Year=X...Time.Code,Indicator=Series.Code) %>% tbl_df
 
 df_meta0 <- read.csv("../data/8832f489-b226-41cb-ac28-59241cc84533_Country - Metadata.csv",
                      stringsAsFactors=FALSE) %>%
-    tbl_df %>%
-    #rename(Country.Code=X...Code) %>%
-    rename(Country=Short.Name)
-## first name is weird, rename() doesn't work from command line
-names(df_meta0)[1] <- "Country.Code"
+    rename(Country.Code=X...Code, Country=Short.Name) %>% tbl_df
 
 attrs <- read.csv("../data/map-categories-attributes-final.csv",
                   stringsAsFactors=FALSE, na.strings="") %>% tbl_df
@@ -50,15 +42,15 @@ country_names <- df_meta0 %>% select(country.code, country)
 cats <- df_meta0 %>% filter(income.group=="") %>%
     filter(long.name !="") %>% .$long.name
 
-## 248, includes some groups
-## 215 countries
-## 60 USN countries
+## FULL: 248 includes some groups
+## ALL:  215 countries
+## USN:   60 USN countries
 dffull <- left_join(country_names, df_input0, by="country.code") %>%
     select(-country.code) %>% 
     arrange(country, year, indicator) %>%
     filter(country != "")
 dfall <- dffull %>% filter(!(country %in% cats))
-
+dfusn <- dffull %>% filter(country %in% usn60)
 
 
 ## subset to LATEST available data, if any
@@ -75,24 +67,25 @@ latest_all <- get_latest_available(dfall) %>%
     group_by(indicator) %>%
     mutate(zscore_orig=scale(value, center = TRUE, scale=TRUE)[,]) %>%
     ungroup()
-latest_full <- get_latest_available(dffull) %>%
-    filter(indicator %in% codes1) %>%
-    group_by(indicator) %>%
-    mutate(zscore_orig=scale(value, center = TRUE, scale=TRUE)[,]) %>%
-    ungroup()
 
 
+## ============================================================================
+## final data
+## ============================================================================
 ## INVERT "negative" variables to make them positive
 inv <- attrs %>% select(indicator, need_inverse) %>% na.omit
+
+## for my final subsets
+mysubset <- attrs %>% filter(new_subset>0) %>%
+    select(indicator, new_subset) %>%
+    rename(subset=new_subset)
+
 
 wb_data <- left_join(latest_all, inv, by="indicator") %>%
     mutate(zscore=ifelse( (is.na(need_inverse) %in% FALSE),
                          -zscore_orig, zscore_orig)) %>%
-    select(-need_inverse)
-wb_data_plus <- left_join(latest_full, inv, by="indicator") %>%
-    mutate(zscore=ifelse( (is.na(need_inverse) %in% FALSE)
-                         -zscore_orig, zscore_orig)) %>%
-    select(-need_inverse)
+    select(-need_inverse) %>%
+    left_join(., mysubset, by="indicator")
 
 wb_entities <- df_meta0 %>% select(country, income.group, region)
 
@@ -102,13 +95,10 @@ wb_metadata <- attrs %>% select(indicator, label) %>%
     select(indicator, label_short, label) %>% 
     arrange(indicator)
 
-
-print("OUTPUT TO /CACHE...")
+## ============================================================================
+## output
+## ============================================================================
 saveRDS(wb_data, "../cache/wb_data.rds")
-saveRDS(wb_data_plus, "../cache/wb_data_plus.rds")
 saveRDS(wb_metadata, "../cache/wb_metadata.rds")
 saveRDS(wb_entities, "../cache/wb_entities.rds")
 saveRDS(usn60, "../cache/usn60.rds")
-print("DONE")
-
-

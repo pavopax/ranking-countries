@@ -1,27 +1,25 @@
-library(gdata)
 source("helpers/header.R")
 source("helpers/functions.R")
+library(readxl)
 
-print("MAKE WORLD ECONOMIC FORUM DATA...")
-## takes forever... should export to csv from excel...
-df_data0 <- read.xls("../data/GCI_Dataset_2006-07-2014-15.xlsx",
-                     sheet=2, na.strings="", header=TRUE, skip=3,
-                     stringsAsFactors=FALSE) %>% tbl_df
+df_data0 <- read_excel("../data/GCI_Dataset_2006-07-2014-15.xlsx",
+                       sheet=2, na="", skip=3)
+df_metadata0 <- read_excel("../data/GCI_Dataset_2006-07-2014-15.xlsx",
+                           sheet=3, na="", skip=2)
+df_entities0 <- read_excel("../data/GCI_Dataset_2006-07-2014-15.xlsx",
+                           sheet=4, na="", skip=2)
 
-df_metadata0 <- read.csv("../data/weforum/Metadata-Table 1.csv",
-                         na.strings="", header=TRUE,
-                         stringsAsFactors=FALSE) %>% tbl_df
-
-df_entities0 <- read.xls("../data/GCI_Dataset_2006-07-2014-15.xlsx",
-                         sheet=4, na.strings="", header=TRUE, skip=2,
-                         stringsAsFactors=FALSE) %>% tbl_df
+names(df_data0) %<>% gsub(" ", ".", .) %>%
+    iconv(., "latin1", "ASCII", sub="")
+names(df_metadata0) %<>% gsub(" ", ".", .) %>% tolower
+names(df_entities0) %<>% gsub(" ", ".", .) %>%
+    gsub("\\(|,|)", "", .) %>% tolower
 
 
-print("EDIT DF_DATA...")
 ## most recent 2015-2016 is not in dataset...
 df_data <- df_data0 %>% filter(Edition=="2014-2015")
 df_data %<>% filter(Attribute=="Value")
-# max(df_data$Placement)==dim(df_data)[1]
+#max(df_data$Placement)==dim(df_data)[1]
 df_data1 <- df_data %>% select(Attribute, GLOBAL.ID, Series.unindented)
 df_data2 <- df_data %>% select(Albania:Zimbabwe) %>%
     mutate_each(funs(as.numeric))
@@ -31,7 +29,6 @@ df_data <- bind_cols(df_data1, df_data2)
 df_data %<>% gather(., country, value, Albania:Zimbabwe) %>%
     rename(label=Series.unindented, indicator=GLOBAL.ID) %>% 
     select(country, indicator, value)
-
 df_data$country %<>% as.character
 
 ## add z-score
@@ -40,20 +37,23 @@ df_data %<>%
     mutate(zscore=scale(value, center = TRUE, scale=TRUE)[,]) %>%
     ungroup()
 
-print("EDIT OTHERS...")
+
+## METADATA, ENTITIES
 df_metadata <- df_metadata0 %>%
-    select(GLOBAL.ID, Series.unindented, Description) %>%
-    rename(indicator=GLOBAL.ID, label=Series.unindented)
-names(df_metadata) %<>% tolower
+    select(global.id, series.unindented, description) %>%
+    rename(indicator=global.id, label=series.unindented)
+
 
 df_entities <- df_entities0 %>%
-    rename(region.imf = Region..IMF..April.2014.,
-           income.group = Income.group..World.Bank..July.2014.)
-names(df_entities) %<>% tolower
+    rename(region.imf = region.imf.april.2014,
+           income.group = income.group.world.bank.july.2014)
 
 
-print("SAVE TO /cache...")
+## add my subset
+pillars <- df_metadata %>% filter(grepl("pillar", label)) %>% .$indicator
+df_data %<>% mutate(subset=ifelse(indicator %in% pillars, 1, 0))
+
 saveRDS(df_data, "../cache/wef_data.rds")
 saveRDS(df_metadata, "../cache/wef_metadata.rds")
 saveRDS(df_entities, "../cache/wef_entities.rds")
-print("DONE")
+

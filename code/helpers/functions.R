@@ -69,7 +69,7 @@ na.zero <- function (x, n=0) {
 ##' @param x a vector
 ##' @return length, unique length
 ##' @author Paul
-lenghts <- function(x) {
+lengths <- function(x) {
     return (c(x %>% length,
-              x %>% length %>% unique))
+              x %>% unique %>% length))
 }
