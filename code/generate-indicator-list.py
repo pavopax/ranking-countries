@@ -1,4 +1,4 @@
-"""Print list of indicators for web app to stdout. Paste these into
+"""Make list of indicators for web app and print to stdout. Paste these into
 /heroku/forms.py , instead of loading from database each time
 
 """
