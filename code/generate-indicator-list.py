@@ -41,6 +41,9 @@ fancy_df = df[df.subset==2].drop('subset', axis=1)
 indicator_df = df[df.subset==1].drop('subset', axis=1)
 
 
+print "all_indicators"
+print tuple_it(df.drop('subset', axis=1))
+
 print "optimism"
 print tuple_it(optimism_df)
 
