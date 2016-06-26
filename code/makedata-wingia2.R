@@ -13,7 +13,7 @@ df <- df0 %>%
     ungroup
 
 df$indicator %<>% gsub("net_", "", .)
-df$subset <- 1
+df$subset <- 3
 
 wingia_metadata <- frame_data(
     ~indicator, ~label_short, 

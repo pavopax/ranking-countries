@@ -23,32 +23,29 @@ conn = psycopg2.connect("dbname='indicators'")
 cursor = conn.cursor()
 
 # this not strictly necessary if all indicators are in `metadata`
-query = """SELECT distinct indicator from indicators;"""
-indicator_df = make_df(query)
+query = """SELECT distinct indicator, subset from indicators;"""
+all_indicator_df = make_df(query).sort_values(['subset', 'indicator'])
+
 
 query = """SELECT indicator, label_short from metadata;"""
 label_df = make_df(query)
 
 # final subsets 
-all_df = indicator_df.merge(label_df)
+df = all_indicator_df.merge(label_df)
 
 # subsets of indicators
-basic = "AG.LND.TOTL.K2 SP.POP.TOTL NY.GDP.PCAP.PP.CD SP.POP.GROW".split()
 optimism = "econ_optimism happiness hope".split()
-fancy = "IC.TAX.GIFT.ZS LP.LPI.TIME.XQ IC.WRH.PROC IC.TAX.PAYM IC.ISV.DURS IC.REG.DURS IQ.SCI.OVRL".split()
-combined = basic + optimism + extra
+optimism_df = df[df.indicator.isin(optimism)].drop('subset', axis=1)
 
-print "All indicators:"
-print tuple_it(df)
+fancy_df = df[df.subset==2].drop('subset', axis=1)
+indicator_df = df[df.subset==1].drop('subset', axis=1)
 
-print "Basic:"
-print tuple_it(df[df.indicator.isin(basic)])
 
-print "Optimism:"
-print tuple_it(df[df.indicator.isin(optimism)])
+print "optimism"
+print tuple_it(optimism_df)
 
-print "Fancy:"
-print tuple_it(df[df.indicator.isin(fancy)])
+print "fancy"
+print tuple_it(fancy_df)
 
-print "Anti-combined:"
-print tuple_it(df[-df.indicator.isin(combined)])
+print "main"
+print tuple_it(indicator_df)
