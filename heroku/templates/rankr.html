@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Rank it{% endblock %}
+{% block content %}
+
+<h2>Rankr</h2>
+
+
+
+<form id='indicator_form' method='post' action='rankr' >
+    <fieldset>
+	{{ form.hidden_tag() }}
+	
+	<div style = font-size:20px; font-weight:bold; margin-left:150px;>
+	    Select 5 Indicators:<br>
+	    {{ form.indicator1 }}
+	    {{ form.indicator2 }}
+	    {{ form.indicator3 }}
+	    {{ form.indicator4 }}
+	    {{ form.indicator5 }}
+	    <br>
+	    Select an optimism index:<br>
+	    {{ form.optimism }}
+	    <br>
+	    Select one of the following:<br>
+	    {{ form.fancy }}
+	    <br>
+	    <br><br>
+	    {{ form.submit }}
+	</div>
+	
+    </fieldset>
+</form>
+
+
+
+{% endblock %}
