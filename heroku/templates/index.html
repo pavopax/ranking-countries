@@ -4,31 +4,19 @@
 
 <h1>Ranking Countries</h1>
 
-<p>We're all familiar with various rankings of the world's universities. Recently, however, US News came out with a<a href="http://www.usnews.com/news/best-countries/overall-full-list" target="_blank"> ranking of the world's countries</a>. Partly in order to investigate their methodology, this project tried to recreate the US News ranking, to contrast what is shown by propriatary survey data (the basis for the US News ranking) with hard, real metrics that are publicly accessible (which is what this ranking is based on).</p>
-<p>Below is the current top 10<a href="{{ url_for('ranking') }}"> (click image to see the full list!):</p>
+<p>We're all familiar with various rankings of the world's universities. Recently, however, US News came out with a<a href="http://www.usnews.com/news/best-countries/overall-full-list" target="_blank"> ranking of the world's countries</a>. Partly in order to investigate their methodology, this project tried to recreate the US News ranking, to contrast what is shown by propriatary survey data (the basis for the US News ranking) with hard, real metrics that are publicly accessible (for this ranking).</p>
 
+<p>However, not being able to replicate some of their input features, in this app, you can instead <a href="{{ url_for('rankr') }}">create your own country ranking</a> and <a href="{{ url_for('explorer') }}">explore the data</a>.</p>
 
-<a href="{{ url_for('ranking') }}"><img src="{{ url_for('static', filename='img/rank10.png')}}" class="img-responsive" alt="Responsive image" width="400"></a>
-
-
-<h2>Data Explorer</h2>
-<p>A feature of the final ranking will be a <b>Data Explorer</b>, like what US News has.</p>
-
-<p><a href="{{ url_for('explorer') }}">Click here to explore a few pre-selected indicators.</a></p>
-
-<a href="{{ url_for('explorer') }}"><img src="{{ url_for('static', filename='img/sample-explorer.png')}}" class="img-responsive" alt="Responsive image" width="500"></a>
 
 <div id="details">
     <h2>Data Details</h2>
-    <p>The ranking from US News had 60 "best" countries. These were selected for my plots in the above links. All data is downloaded live from the <a href="http://datacatalog.worldbank.org" target="_blank">World Bank</a> via use of their API.</p>
-</div>
+    <p>My data was sourced from 3 locations:
 
-
-<div id="notes">
-    <h2>Other Notes</h2>
-    <p>One of the project aims is to compare and contrast perception (US News survey data) with measured statistics (World Bank, other data), and perform analyses to determine sensitivity of the various measurements. For example, US News seemed to use unadjusted GDP per capita, while adjusting it for <a href="http://www.investopedia.com/terms/p/ppp.asp" target="_blank">purchasing power</a> may be better.</p>
-    <p>The project will feature customizable rankings via adjustable weighting of the attributes, so that anyone can find their own "best country."</p>
-</div>
+	<li><a href="http://data.worldbank.org" target="_blank">The World Bank - Indicators</a></li>
+	<li><a href="http://reports.weforum.org/global-competitiveness-report-2014-2015/" target="_blank">World Economic Forum - Global Competitiveness Index</a></li>
+	<li><a href="http://www.wingia.com/en/services/end_of_year_survey_2015/global_regional_results/9/53/" target="_blank">WIN/Gallup International - End of the Year Survey</a></li>
+    </p></div>
 
 <div id="toolkit">
     <h2>Toolkit</h2>
