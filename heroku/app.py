@@ -1,6 +1,4 @@
 import os
-import wbdata
-import datetime
 import pandas as pd
 import numpy as np
 import psycopg2
@@ -11,17 +9,11 @@ from math import ceil, floor
 from flask import Flask, render_template, send_from_directory, request, redirect, flash, jsonify
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
-from bokeh.models import HoverTool, BoxSelectTool
+from bokeh.models import HoverTool
 from bokeh.resources import INLINE
 
-#from flask_wtf import Form
-from wtforms import Form, widgets, SelectMultipleField
-
-
 #from flask.ext.sqlalchemy import SQLAlchemy
-import sqlalchemy
 from forms import IndicatorForm, RankForm  # my forms.py file
-from forms2 import IndicatorForm2  # my forms2.py file
 from forms_checkbox import SimpleForm  # my forms_checkbox.py file
 
 
