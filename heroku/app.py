@@ -14,9 +14,16 @@ from bokeh.embed import components
 from bokeh.models import HoverTool, BoxSelectTool
 from bokeh.resources import INLINE
 
+#from flask_wtf import Form
+from wtforms import Form, widgets, SelectMultipleField
+
+
 #from flask.ext.sqlalchemy import SQLAlchemy
 import sqlalchemy
-from forms import IndicatorForm  # my forms.py file
+from forms import IndicatorForm, RankForm  # my forms.py file
+from forms2 import IndicatorForm2  # my forms2.py file
+from forms_checkbox import SimpleForm  # my forms_checkbox.py file
+
 
 # initialization
 app = Flask(__name__)
@@ -36,6 +43,7 @@ app.secret_key = 'development key'
 
 # for passing some vars from user input
 app.vars={}
+app.rankr_vars={}
 
 @app.route('/favicon.ico')
 def favicon():
@@ -76,7 +84,7 @@ def explorer():
 
 @app.route('/graph')
 def graph():
-    """get data from database, put into pandas, and display.
+    """Query database, put into pandas, and display.
     data (indicators) are from user input in explorer()
     """
     urlparse.uses_netloc.append("postgres")
@@ -96,7 +104,7 @@ def graph():
     ind1 = app.vars['i1']
     ind2 = app.vars['i2']
 
-    query = """SELECT country, indicator, zscore from usn WHERE indicator IN (%s, %s);"""
+    query = """SELECT country, indicator, zscore from indicators WHERE indicator IN (%s, %s);"""
     cursor.execute(query, (ind1, ind2) )
 
     df=pd.DataFrame(cursor.fetchall(), columns=['country', 'indicator',
@@ -105,7 +113,7 @@ def graph():
     df = df.zscore
 
     # get indicator labels for axes
-    query = """SELECT indicator, label from codes WHERE indicator IN (%s, %s);"""
+    query = """SELECT indicator, label_short from metadata WHERE indicator IN (%s, %s);"""
     cursor.execute(query, (ind1, ind2) )
     labs = dict(cursor.fetchall())
 
@@ -147,13 +155,88 @@ def graph():
     p.yaxis.axis_label_text_font_size = "10pt"
 
     script, div = components(p)
-    return render_template('graph.html', script=script, div=div,
-                           i1=ind1, i2=ind2)
+    return render_template('graph.html', script=script, div=div)
 
 
-@app.route("/ranking")
-def ranking():
-    return render_template('ranking.html')
+
+@app.route('/rankr', methods = ['GET', 'POST'])
+def rankr():
+    form = RankForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All fields are required.')
+            return render_template('rankr.html', form = form)
+        else:
+            app.rankr_vars['i1'] = request.form['indicator1']
+            app.rankr_vars['i2'] = request.form['indicator2']
+            app.rankr_vars['i3'] = request.form['indicator3']
+            app.rankr_vars['i4'] = request.form['indicator4']
+            app.rankr_vars['i5'] = request.form['indicator5']
+            app.rankr_vars['optimism'] = request.form['optimism']
+            app.rankr_vars['fancy'] = request.form['fancy']
+            return redirect('/result')
+
+    elif request.method == 'GET':
+        return render_template('rankr.html', form = form)
+
+
+@app.route("/result")
+def result():
+    """Display results from /rankr. Countries are ranked by descending mean z-score
+    of selected choices.
+
+    """
+    urlparse.uses_netloc.append("postgres")
+    url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+
+    cursor = conn.cursor()
+
+    query = """SELECT country, indicator, zscore from indicators;"""
+    cursor.execute(query)
+    all_data = pd.DataFrame(cursor.fetchall(),
+                            columns=[desc[0] for desc in cursor.description])
+    
+    query = """SELECT source, indicator, label_short from metadata;"""
+    cursor.execute(query)
+    all_labels = pd.DataFrame(cursor.fetchall(),
+			      columns=[desc[0] for desc in cursor.description])
+
+    choices = []
+    choices.extend((app.rankr_vars['i1'], app.rankr_vars['i2'],
+                    app.rankr_vars['i3'], app.rankr_vars['i4'],
+                    app.rankr_vars['i5'],
+                    app.rankr_vars['optimism'], app.rankr_vars['fancy']
+                    ))
+
+    df = (all_data[(all_data.indicator.isin(choices))]
+          .pivot(index='country', columns='indicator', values='zscore'))
+    df = df.fillna(0)
+    labels = all_labels[all_labels.indicator.isin(choices)]
+
+    N = 10
+    rank = df.mean(1).sort_values(ascending=False).head(N)
+    df_rank = pd.DataFrame({'Rank' : range(1, N+1, 1),
+			    'Country' : rank.index,
+			    'Score' : rank
+                            })
+
+    df_rank = df_rank[['Rank', 'Country', 'Score']]
+
+    return render_template('result.html',
+                           data=df_rank.to_html(index=False))
+
+
+@app.route("/ranking_old")
+def ranking_old():
+    return render_template('original_ranking_result.html')
 
 
 @app.route("/indicators")
@@ -176,12 +259,7 @@ def week1():
     return render_template('week1.html')
 
 
-# temp: for testing fvrt.html
-@app.route("/add_numbers")
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result = a+b)
+
 
 
 # temp: for testing polynomial.html
@@ -235,9 +313,56 @@ def polynomial():
                            form=form)
 
 
+# temp: for testing fvrt_jquery.html
+@app.route("/make_ranking")
+def make_ranking():
+    """get data from database, put into pandas, and display.
+    data (indicators) are from user input in explorer()
+    """
+
+    a = request.args.get('a')
+    b = request.args.get('b')
+
+    # urlparse.uses_netloc.append("postgres")
+    # url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+    # conn = psycopg2.connect(
+    #     database=url.path[1:],
+    #     user=url.username,
+    #     password=url.password,
+    #     host=url.hostname,
+    #     port=url.port
+    # )
+
+    # cursor = conn.cursor()
+
+    # query = """SELECT , ine"""
+
+    return jsonify(result = str(a) + str(b))
+
+# temp: for testing fvrt_jquery.html
+@app.route("/get_checkbox_values")
+def get_checkbox_values():
+    """get data from database, put into pandas, and display.
+    data (indicators) are from user input in explorer()
+    """
+    a = request.args.get('a')
+    return jsonify(result = str(a))
+
+
+# testing
+# fvrt_jquery
 @app.route("/fvrt")
 def fvrt():
-    return render_template('fvrt.html')
+    form_checkbox = SimpleForm()
+    if form_checkbox.validate():
+        print form_checkbox.indicators.data
+    else:
+        print form_checkbox.errors
+
+    return render_template('fvrt_jquery.html',
+                           form_checkbox=form_checkbox)
+
 
 @app.route("/testing")
 def testing():

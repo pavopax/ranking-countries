@@ -1,47 +1,14 @@
 from flask_wtf import Form
-from wtforms import TextField, IntegerField, TextAreaField, SubmitField, RadioField, SelectField
-
-from wtforms import validators, ValidationError
-
-
-#indicators = [('SE.TER.ENRR', 'Gross enrolment ratio, tertiary, both sexes (%)'), ('SE.SEC.ENRR.MA', 'Gross enrolment ratio, secondary, male (%)'), ('SE.TER.ENRR.FE', 'Gross enrolment ratio, tertiary, female (%)'), ('IQ.CPA.GNDR.XQ', 'CPIA gender equality rating (1=low to 6=high)'), ('IQ.CPA.PROP.XQ', 'CPIA property rights and rule-based governance rating (1=low to 6=high)')]
-
-# GOOD!
-#indicators = [('AG.LND.TOTL.K2':'Land Area'), ('NY.GDP.PCAP.CD', 'GDP per capita (current US$)'), ('SP.POP.TOTL', 'Population, total')]
+from wtforms import TextField, IntegerField, TextAreaField, SubmitField 
+from wtforms import validators, ValidationError, RadioField, SelectField
 
 
-# TODO: get these from DB
-indicators = [('AG.LND.TOTL.K2', 'Land area (sq. km)'),
-              ('EN.POP.DNST', 'Population density (people per sq. km of land area)'),
-              ('ER.BDV.TOTL.XQ', 'GEF benefits index for biodiversity (0 = no biodiversity potential to 100 = maximum)'),
-              ('ST.INT.ARVL', 'International tourism, number of arrivals'),
-              ('ST.INT.RCPT.XP.ZS', 'International tourism, receipts (% of total exports)'),
-              ('SE.ADT.LITR.ZS', 'Literacy rate, adult total (% of people ages 15 and above)'),
-              ('IC.BUS.NDNS.ZS', 'New business density (new registrations per 1,000 people ages 15-64)'),
-              ('FB.CBK.BRCH.P5', 'Commercial bank branches (per 100,000 adults)'),
-              ('SL.TLF.TERT.ZS', 'Labor force with tertiary education (% of total)'),
-              ('SL.TLF.SECO.ZS', 'Labor force with secondary education (% of total)'),
-              #('TX.VAL.TECH.CD', 'High-technology exports (current US$)'),
-              ('TX.VAL.TECH.MF.ZS', 'High-technology exports (% of manufactured exports)'),
-              ('IC.BUS.DISC.XQ', 'Business extent of disclosure index (0=less disclosure to 10=more disclosure)'),
-              ('IS.RRS.GOOD.MT.K6', 'Railways, goods transported (million ton-km)'),
-              ('IS.AIR.PSGR', 'Air transport, passengers carried'),
-              ('IC.LGL.CRED.XQ', 'Strength of legal rights index (0=weak to 12=strong)'),
-              ('IC.REG.DURS', 'Time required to start a business (days)'),
-              ('IC.BUS.EASE.XQ', 'Ease of doing business index (1=most business-friendly regulations)'),
-              ('NV.IND.MANF.ZS', 'Manufacturing, value added (% of GDP)'),
-              ('NY.GDP.MKTP.CD', 'GDP (current US$)'),
-              ('NY.GDP.PCAP.CD', 'GDP per capita (current US$)'),
-              ('NY.GDP.PCAP.PP.CD', 'GDP per capita, PPP (current international $)'),
-              ('GC.TAX.YPKG.ZS', 'Taxes on income, profits and capital gains (% of total taxes)'),
-              ('SP.POP.GROW', 'Population growth (annual %)'),
-              #('MS.MIL.XPND.CN', 'Military expenditure (current LCU)'),
-              ('MS.MIL.XPND.GD.ZS', 'Military expenditure (% of GDP)'),
-              ('SL.UEM.TOTL.ZS', 'Unemployment, total (% of total labor force) (modeled ILO estimate)'),
-              ('FP.CPI.TOTL.ZG', 'Inflation, consumer prices (annual %)'),
-              ('SI.POV.GINI', 'GINI index (World Bank estimate)'),
-              ('SH.MED.BEDS.ZS', 'Hospital beds (per 1,000 people)')]
 
+# get these from `../code/generate-indicator-list.py`
+all_indicators = [('AG.LND.TOTL.K2', 'Land area'), ('GCI.A.01', 'Competitiveness, Institutions'), ('GCI.A.02', 'Competitiveness, Infrastructure'), ('GCI.A.03', 'Competitiveness, Macroeconomic environment'), ('GCI.A.04', 'Competitiveness, Health and primary education'), ('GCI.B.05', 'Competitiveness, Higher education and training'), ('GCI.B.06', 'Competitiveness, Goods market efficiency'), ('GCI.B.07', 'Competitiveness, Labor market efficiency'), ('GCI.B.08', 'Competitiveness, Financial market development'), ('GCI.B.09', 'Competitiveness, Technological readiness'), ('GCI.B.10', 'Competitiveness, Market size'), ('GCI.C.11', 'Competitiveness, Business sophistication '), ('GCI.C.12', 'Competitiveness, Innovation'), ('NY.GDP.PCAP.PP.CD', 'GDP per capita, PPP'), ('SI.POV.GINI', 'GINI index'), ('SP.POP.GROW', 'Population growth'), ('SP.POP.TOTL', 'Population, total'), ('ST.INT.ARVL', 'International tourism, number of arrivals'), ('ER.BDV.TOTL.XQ', 'GEF benefits index for biodiversity'), ('FB.CBK.BRCH.P5', 'Commercial bank branches'), ('IC.ISV.DURS', 'Time to resolve insolvency'), ('IC.REG.DURS', 'Time required to start a business'), ('IC.REG.PROC', 'Start-up procedures to register a business'), ('IC.TAX.PAYM', 'Tax payments'), ('IC.WRH.PROC', 'Procedures to build a warehouse'), ('SG.GEN.PARL.ZS', 'Proportion of seats held by women in national parliaments'), ('econ_optimism', 'Net economic optimism'), ('happiness', 'Net happiness'), ('hope', 'Net hope')]
+optimism = [('econ_optimism', 'Net economic optimism'), ('happiness', 'Net happiness'), ('hope', 'Net hope')]
+fancy = [('ER.BDV.TOTL.XQ', 'GEF benefits index for biodiversity'), ('FB.CBK.BRCH.P5', 'Commercial bank branches'), ('IC.ISV.DURS', 'Time to resolve insolvency'), ('IC.REG.DURS', 'Time required to start a business'), ('IC.REG.PROC', 'Start-up procedures to register a business'), ('IC.TAX.PAYM', 'Tax payments'), ('IC.WRH.PROC', 'Procedures to build a warehouse'), ('SG.GEN.PARL.ZS', 'Proportion of seats held by women in national parliaments')]
+main = [('AG.LND.TOTL.K2', 'Land area'), ('GCI.A.01', 'Competitiveness, Institutions'), ('GCI.A.02', 'Competitiveness, Infrastructure'), ('GCI.A.03', 'Competitiveness, Macroeconomic environment'), ('GCI.A.04', 'Competitiveness, Health and primary education'), ('GCI.B.05', 'Competitiveness, Higher education and training'), ('GCI.B.06', 'Competitiveness, Goods market efficiency'), ('GCI.B.07', 'Competitiveness, Labor market efficiency'), ('GCI.B.08', 'Competitiveness, Financial market development'), ('GCI.B.09', 'Competitiveness, Technological readiness'), ('GCI.B.10', 'Competitiveness, Market size'), ('GCI.C.11', 'Competitiveness, Business sophistication '), ('GCI.C.12', 'Competitiveness, Innovation'), ('NY.GDP.PCAP.PP.CD', 'GDP per capita, PPP'), ('SI.POV.GINI', 'GINI index'), ('SP.POP.GROW', 'Population growth'), ('SP.POP.TOTL', 'Population, total'), ('ST.INT.ARVL', 'International tourism, number of arrivals')]
 
 
 class IndicatorForm(Form):
@@ -49,11 +16,10 @@ class IndicatorForm(Form):
    
 
     indicator1 = SelectField('First Indicator',
-                           choices = indicators)
+                           choices = all_indicators)
 
     indicator2 = SelectField('Second Indicator',
-                           choices = indicators)
-
+                           choices = all_indicators)
 
 
     title = TextField("Add a Custom Plot Title", default="My Fancy Plot Title")
@@ -61,3 +27,18 @@ class IndicatorForm(Form):
 
     submit = SubmitField("Submit")
 
+
+class RankForm(Form):
+    """Form for creating custom country ranking"""
+
+    indicator1 = SelectField('Indicator 1', choices = main)
+    indicator2 = SelectField('Indicator 2', choices = main)
+    indicator3 = SelectField('Indicator 3', choices = main)
+    indicator4 = SelectField('Indicator 4', choices = main)
+    indicator5 = SelectField('Indicator 5', choices = main)
+
+    optimism = SelectField('Optimism', choices = optimism)
+
+    fancy = SelectField('Extra', choices = fancy)
+
+    submit = SubmitField("Rank it")    
