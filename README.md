@@ -37,6 +37,16 @@ Details
 ===============================================================================
 For Data details, see `/data/README.md` 
 
+`/heroku`
+
+contains the code for the deployed web app
+
+`/code`
+
+code to explore and munge data
+
+
+
 
 
 USNWR - methodology notes
