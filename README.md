@@ -19,33 +19,52 @@ See below for [details](#details) and [tech stack](#tech-stack)
 
 Details
 ===============================================================================
-Similar countries to your top choice are found using Machine learning (affinity clustering).
+Similar countries to your top choice are found using machine learning (affinity
+clustering). See the notebook `/code/python-explore/affinitypropagation.ipynb`
+
+Data explorer fits a best-fit linear regression line.
 
 For Data details, see `/data/README.md` 
 
+Key directories
+===============================================================================
+
 `/heroku`
 
-contains the code for the deployed web app
+contains the code for the deployed web application
 
 `/code`
 
-contains code to explore and munge data
+contains code to munge and explore the data [working]
 
 
 
 Tech stack
 ===============================================================================
+Python tools
+  * heroku deployment
+  * pandas data manipulation
+  * [flask web app](http://flask.pocoo.org)
 
-heroku
+Graphics
+  * bokeh
+  * D3, via [NVD3](https://github.com/novus/nvd3")
+  * Shiny
+  
+Analysis
+  * R
+  * Python
 
-virtual env
+Web 
+  * [WTF-Forms](http://flask.pocoo.org/docs/0.10/patterns/wtforms/) for interactive web forms 
+  * Bootstrap
+  * Custom CSS, HTML tweaks (Safari console debugger was very useful!)
 
-python
+Database (deployed remotely to Heroku/AWS):
+* Postgres <img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="24px"> 
 
-* `app.py` includes my custom module/class `IndicatorForm`
-
-Postgres <img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="24px"> database
-*  deployed remotely, interacts with Flask (see the [Data Explorer](http://indicated.herokuapp.com/explorer) )
+Misc
+  * virtual env
 
 
 
