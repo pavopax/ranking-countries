@@ -1,12 +1,15 @@
 {% extends "base.html" %} {% block title %}Result{% endblock %} {% block
 content %}
 
-<h2>Results </h2>
+<h2>Here are the places you should move to:</h2>
 
-{{data | safe }}
+{{rank_table | safe }}
 
-<p>The <b>final score</b> is an average standardized score across the features you
-selected. A score of 0 means "average", while a score of 1 means "one standard
+If you like <b>{{top_country}}</b>, you may also consider <b>{{similar_countries|join(', ')}}</b>,
+which are similar across all the features.
+
+<p>The final <b>score</b> is an average standardized score across the features you
+selected. Higher is better. A score of 0 means "average", while a score of 1 means "one standard
     deviation above average".</p>
 <p>More features are coming soon!</p>
 

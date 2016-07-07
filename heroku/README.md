@@ -2,7 +2,7 @@
 
 Quick Start
 ===============================================================================
-application is at [http:/indicated.herokuapp.com](http://indicated.herokuapp.com)
+application is at [http://ranking-countries.herokuapp.com/](http://ranking-countries.herokuapp.com/)
 
 deployed code is in branch `heroku`
 

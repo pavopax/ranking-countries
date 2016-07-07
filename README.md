@@ -1,7 +1,7 @@
-# Ranking the World's Countries
-Paul Paczuski [pavopax.com](http://pavopax.github.io)   [AMA!] 	
+Ranking the World's Countries (working)
+===============================================================================
 
-The web app (working) is at:
+The web app is at:
 
 * http://ranking-countries.herokuapp.com
 
@@ -9,16 +9,31 @@ The inspiration was:
 
 * http://www.usnews.com/news/best-countries
 
-My data is from:
+The data is from:
 
 * [The World Bank - Indicators](http://data.worldbank.org)
 * [World Economic Forum - Global Competitiveness Index](http://reports.weforum.org/global-competitiveness-report-2014-2015/)
 * [WIN/Gallup International - End of the Year Survey](http://www.wingia.com/en/services/end_of_year_survey_2015/global_regional_results/9/53/)
 
+See below for [details](#details) and [tech stack](#tech-stack)
+
+Details
+===============================================================================
+Similar countries to your top choice are found using Machine learning (affinity clustering).
+
+For Data details, see `/data/README.md` 
+
+`/heroku`
+
+contains the code for the deployed web app
+
+`/code`
+
+contains code to explore and munge data
 
 
 
-Toolkit 
+Tech stack
 ===============================================================================
 
 heroku
@@ -31,20 +46,6 @@ python
 
 Postgres <img src="https://raw.githubusercontent.com/pavopax/ranking-countries/master/heroku/static/img/ele.png" width="24px"> database
 *  deployed remotely, interacts with Flask (see the [Data Explorer](http://indicated.herokuapp.com/explorer) )
-
-
-Details
-===============================================================================
-For Data details, see `/data/README.md` 
-
-`/heroku`
-
-contains the code for the deployed web app
-
-`/code`
-
-code to explore and munge data
-
 
 
 
@@ -68,4 +69,12 @@ Sources
 ===============================================================================
 More on some CPIA indicators:
 * http://data.worldbank.org/data-catalog/CPIA
+
+Resources
+===============================================================================
+
+HTML Table styles in flask/pandas:
+* https://sarahleejane.github.io/learning/python/2015/08/09/simple-tables-in-webapps-using-flask-and-pandas-with-python.html
+* https://www.smashingmagazine.com/2008/08/top-10-css-table-designs/#8-rounded-corner
+
 

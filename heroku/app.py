@@ -16,6 +16,8 @@ from bokeh.resources import INLINE
 from forms import IndicatorForm, RankForm  # my forms.py file
 from forms_checkbox import SimpleForm  # my forms_checkbox.py file
 
+from clustering import get_similar_countries  # my clustering.py file
+
 
 # initialization
 app = Flask(__name__)
@@ -175,9 +177,10 @@ def rankr():
 @app.route("/result")
 def result():
     """Display results from /rankr. Countries are ranked by descending mean z-score
-    of selected choices.
+    of selected indicator choices.
 
     """
+    # heroku/postgres setup:
     urlparse.uses_netloc.append("postgres")
     url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
@@ -200,6 +203,8 @@ def result():
     cursor.execute(query)
     all_labels = pd.DataFrame(cursor.fetchall(),
 			      columns=[desc[0] for desc in cursor.description])
+    conn.close()
+
 
     choices = []
     choices.extend((app.rankr_vars['i1'], app.rankr_vars['i2'],
@@ -213,17 +218,23 @@ def result():
     df = df.fillna(0)
     labels = all_labels[all_labels.indicator.isin(choices)]
 
+
     N = 10
-    rank = df.mean(1).sort_values(ascending=False).head(N)
-    df_rank = pd.DataFrame({'Rank' : range(1, N+1, 1),
-			    'Country' : rank.index,
-			    'Score' : rank
+    ranked = df.mean(1).sort_values(ascending=False).head(N)
+    df_ranking = pd.DataFrame({'Rank' : range(1, N+1, 1),
+			    'Country' : ranked.index,
+			    'Score' : ranked
                             })
 
-    df_rank = df_rank[['Rank', 'Country', 'Score']]
+    df_ranking = df_ranking[['Rank', 'Country', 'Score']]
+    top_country = df_ranking['Country'][0]
+    similar_countries = get_similar_countries(df, top_country)
 
-    return render_template('result.html',
-                           data=df_rank.to_html(index=False))
+    return render_template('result.html'
+                           , rank_table=df_ranking.to_html(index=False, classes='main')
+                           , top_country=top_country
+                           , similar_countries=similar_countries
+                           )
 
 
 @app.route("/ranking_old")
