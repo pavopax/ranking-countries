@@ -194,6 +194,7 @@ def result():
 
     cursor = conn.cursor()
 
+    # OBTAIN queried data
     query = """SELECT country, indicator, zscore from indicators;"""
     cursor.execute(query)
     all_data = pd.DataFrame(cursor.fetchall(),
@@ -205,6 +206,9 @@ def result():
 			      columns=[desc[0] for desc in cursor.description])
     conn.close()
 
+    # GET DATA FRAMES FOR ANALYSIS
+    df_wide = all_data.pivot(index='country', columns='indicator', values='zscore')
+    df_wide = df_wide.fillna(0)
 
     choices = []
     choices.extend((app.rankr_vars['i1'], app.rankr_vars['i2'],
@@ -224,16 +228,15 @@ def result():
     df_ranking = pd.DataFrame({'Rank' : range(1, N+1, 1),
 			    'Country' : ranked.index,
 			    'Score' : ranked
-                            })
+                            })[['Rank', 'Country', 'Score']]
 
-    df_ranking = df_ranking[['Rank', 'Country', 'Score']]
     top_country = df_ranking['Country'][0]
-    similar_countries = get_similar_countries(df, top_country)
+    similar_countries_top = get_similar_countries(df_wide, top_country)
 
     return render_template('result.html'
                            , rank_table=df_ranking.to_html(index=False, classes='main')
                            , top_country=top_country
-                           , similar_countries=similar_countries
+                           , similar_countries_top=similar_countries_top
                            )
 
 
