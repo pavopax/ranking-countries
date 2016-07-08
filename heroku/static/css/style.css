@@ -2,7 +2,8 @@ div.container{
     max-width:750px
 }
 
-table.dataframe, .dataframe th, .dataframe td {
+/* for result.html */
+.result_table th, .result_table td {
   border: none;
   border-bottom: 1px solid #C8C8C8;
   border-collapse: collapse;
@@ -12,12 +13,12 @@ table.dataframe, .dataframe th, .dataframe td {
   font-size: 0.9em;
 }
 
-.main th {
+.result_table th {
     background-color: #add8e6;
     color: white;
 }
 
-tr:nth-child(odd)	{ background-color:#eee; }
-tr:nth-child(even)	{ background-color:#fff; }
+.result_table tr:nth-child(odd)	{ background-color:#eee; }
+.result_table tr:nth-child(even)	{ background-color:#fff; }
 
-tr:hover            { background-color: #add8e6;}
+.result_table tr:hover            { background-color: #add8e6;}

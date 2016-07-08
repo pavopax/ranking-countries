@@ -234,7 +234,7 @@ def result():
     similar_countries_top = get_similar_countries(df_wide, top_country)
 
     return render_template('result.html'
-                           , rank_table=df_ranking.to_html(index=False, classes='main')
+                           , rank_table=df_ranking.to_html(index=False, classes='result_table')
                            , top_country=top_country
                            , similar_countries_top=similar_countries_top
                            )
