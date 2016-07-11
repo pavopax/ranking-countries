@@ -16,8 +16,6 @@ from bokeh.resources import INLINE
 from forms import IndicatorForm, RankForm  # my forms.py file
 from forms_checkbox import SimpleForm  # my forms_checkbox.py file
 
-from clustering import get_similar_countries  # my clustering.py file
-
 
 # initialization
 app = Flask(__name__)
@@ -231,12 +229,10 @@ def result():
                             })[['Rank', 'Country', 'Score']]
 
     top_country = df_ranking['Country'][0]
-    similar_countries_top = get_similar_countries(df_wide, top_country)
 
     return render_template('result.html'
                            , rank_table=df_ranking.to_html(index=False, classes='result_table')
                            , top_country=top_country
-                           , similar_countries_top=similar_countries_top
                            )
 
 
