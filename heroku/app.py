@@ -14,8 +14,6 @@ from bokeh.resources import INLINE
 
 #from flask.ext.sqlalchemy import SQLAlchemy
 from forms import IndicatorForm, RankForm  # my forms.py file
-from forms_checkbox import SimpleForm  # my forms_checkbox.py file
-
 
 # initialization
 app = Flask(__name__)
@@ -259,118 +257,6 @@ def history():
 @app.route("/week1")
 def week1():
     return render_template('week1.html')
-
-
-
-
-
-# temp: for testing polynomial.html
-def getitem(obj, item, default):
-    if item not in obj:
-        return default
-    else:
-        return obj[item]
-        
-
-# temp: for testing polynomial.html
-colors = {
-    'Black': '#000000',
-    'Red':   '#FF0000',
-    'Green': '#00FF00',
-    'Blue':  '#0000FF',
-}
-
-@app.route("/polynomial")
-def polynomial():
-    """ embed simple polynomial chart
-    """
-    args = request.args
-    form = IndicatorForm()
-
-    # get all the form arguments in the url with defaults
-    color = colors[getitem(args, 'color', 'Black')]
-    _from = int(getitem(args, '_from', 0))
-    to = int(getitem(args, 'to', '10'))
-
-    # create a polynomial line graph
-    x = list(range(_from, to+1))
-    fig = figure(title="Polynomials!")
-    fig.line(x, [i ** 3 for i in x], color=color, line_width=2)
-
-    # Configure resources to include BokehJS inline in the document
-    # for more details, see:
-    #   http://bokeh.pydata.org/en/latest/docs/reference/resources_embedding.html#bokeh-embed
-    js_resources = INLINE.render_js()
-    css_resources = INLINE.render_css()
-
-    # for more details, see:
-    #   http://bokeh.pydata.org/en/latest/docs/user_guide/embedding.html#components
-    script, div = components(fig, INLINE)
-
-    return render_template('temp_embed.html',
-                           plot_script=script, plot_div=div,
-                           js_resources=js_resources,
-                           css_resources=css_resources,
-                           color=color, _from=_from, to=to,
-                           form=form)
-
-
-# temp: for testing fvrt_jquery.html
-@app.route("/make_ranking")
-def make_ranking():
-    """get data from database, put into pandas, and display.
-    data (indicators) are from user input in explorer()
-    """
-
-    a = request.args.get('a')
-    b = request.args.get('b')
-
-    # urlparse.uses_netloc.append("postgres")
-    # url = urlparse.urlparse(os.environ["DATABASE_URL"])
-
-    # conn = psycopg2.connect(
-    #     database=url.path[1:],
-    #     user=url.username,
-    #     password=url.password,
-    #     host=url.hostname,
-    #     port=url.port
-    # )
-
-    # cursor = conn.cursor()
-
-    # query = """SELECT , ine"""
-
-    return jsonify(result = str(a) + str(b))
-
-# temp: for testing fvrt_jquery.html
-@app.route("/get_checkbox_values")
-def get_checkbox_values():
-    """get data from database, put into pandas, and display.
-    data (indicators) are from user input in explorer()
-    """
-    a = request.args.get('a')
-    return jsonify(result = str(a))
-
-
-# testing
-# fvrt_jquery
-@app.route("/fvrt")
-def fvrt():
-    form_checkbox = SimpleForm()
-    if form_checkbox.validate():
-        print form_checkbox.indicators.data
-    else:
-        print form_checkbox.errors
-
-    return render_template('fvrt_jquery.html',
-                           form_checkbox=form_checkbox)
-
-
-@app.route("/testing")
-def testing():
-    """ this is a testing page """
-    return render_template('testing.html')
-
 
 # launch
 if __name__ == "__main__":
