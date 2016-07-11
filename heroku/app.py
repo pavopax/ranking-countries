@@ -26,9 +26,9 @@ app = Flask(__name__)
 # app.config.from_object(os.environ['APP_SETTINGS'])
 # print(os.environ['APP_SETTINGS'])
 
-app.config.update(
-    DEBUG=True,
-)
+# app.config.update(
+#     DEBUG=True,
+# )
 
 
 # for csrf stuff (?)
