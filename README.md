@@ -40,6 +40,8 @@ contains code to munge and explore the data [working]
 
 Tech stack
 ===============================================================================
+Briefly, this is a Python-Flask web application with a PostgreSQL database and bokeh-driven data explore, all deployed to Heroku. The web page is styles with <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>. <a href="{{ url_for('static', filename='ico/favicon.ico') }}" target="_blank">Favicon</a> is my own, created on <a href="https://www.fiftythree.com" target="_blank">Paper for iOS</a> and converted with <a href="http://www.favicon.cc/" target="_blank">favicon.cc</a></p>
+
 Python tools
   * heroku deployment
   * pandas data manipulation

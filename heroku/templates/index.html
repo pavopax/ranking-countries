@@ -2,29 +2,21 @@
 {% block title %}{% endblock %}
 {% block content %}
 
-<h1>Ranking Countries</h1>
 
-<p>We're all familiar with various rankings of the world's universities. Recently, however, US News came out with a<a href="http://www.usnews.com/news/best-countries/overall-full-list" target="_blank"> ranking of the world's countries</a>. Partly in order to investigate their methodology, this project tried to recreate the US News ranking, to contrast what is shown by propriatary survey data (the basis for the US News ranking) with hard, real metrics that are publicly accessible (for this ranking).</p>
-
-<p>However, not being able to replicate some of their input features, in this app, you can instead <a href="{{ url_for('rankr') }}">create your own country ranking</a> and <a href="{{ url_for('explorer') }}">explore the data</a>.</p>
-
-
-<div id="details">
-    <h2>Data Details</h2>
-    <p>My data was sourced from 3 locations:
-
-	<li><a href="http://data.worldbank.org" target="_blank">The World Bank - Indicators</a></li>
-	<li><a href="http://reports.weforum.org/global-competitiveness-report-2014-2015/" target="_blank">World Economic Forum - Global Competitiveness Index</a></li>
-	<li><a href="http://www.wingia.com/en/services/end_of_year_survey_2015/global_regional_results/9/53/" target="_blank">WIN/Gallup International - End of the Year Survey</a></li>
-    </p>
+<div class="jumbotron">
+    <h1>Where would you like to live?</h1>
+    <p>Create your own custom ranking of the world's countries.</p>
+    <p>Or, explore the underlying data and discover some insights.</p>
+    <a href="{{ url_for('rankr') }}"><button type="button" class="btn btn-lg btn-primary">Create your ranking</button></a>
+    <a href="{{ url_for('explorer') }}"><button type="button" class="btn btn-lg btn-default">Explore the data</button></a>
+    <a href="{{ url_for('insights') }}"><button type="button" class="btn btn-lg btn-default">Read the insights</button></a>
 </div>
 
-<div id="tech">
-    <h2>Tech Stack</h2>
-    <p>Briefly, this is a Python-Flask web application with a PostgreSQL database and bokeh-driven data explore, all deployed to Heroku. See <a href="https://github.com/pavopax/ranking-countries" target="_blank">the Github repo</a> for details. Page is styles with <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>. <a href="{{ url_for('static', filename='ico/favicon.ico') }}" target="_blank">Favicon</a> is my own, created on <a href="https://www.fiftythree.com" target="_blank">Paper for iOS</a> and converted with <a href="http://www.favicon.cc/" target="_blank">favicon.cc</a></p>
-    
-
-
+<div id="details">
+    <p>We're all familiar with various rankings of the world's universities. Recently, however, US News came out with a <a href="http://www.usnews.com/news/best-countries/overall-full-list" target="_blank">ranking of the world's countries</a>, which was based on <a href="http://www.usnews.com/news/best-countries/articles/methodology"  target="_blank">proprietary survey data</a>.</p>
+    <p>In contrast, the ranking you can build here uses 29 publicly available metrics from <a href="http://data.worldbank.org" target="_blank">The World Bank</a>, <a href="http://reports.weforum.org/global-competitiveness-report-2014-2015/" target="_blank">The World Economic Forum (Global Competitiveness Index)</a>, and <a href="http://www.wingia.com/en/services/end_of_year_survey_2015/global_regional_results/9/53/" target="_blank">the WIN/Gallup International End of the Year Survey</a>.
+    </p>
+    <p>Read methodological details and see the code on <a href="https://github.com/pavopax/ranking-countries" target="_blank" >this Github repository</a>.</p>
 </div>
 
 {% endblock %}
