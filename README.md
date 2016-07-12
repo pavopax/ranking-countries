@@ -1,8 +1,5 @@
 Ranking the World's Countries (working)
 ===============================================================================
-
-*STATUS NOTE: app is broken as of July 11, 2016. should be fixed in 1-2 days*
-
 The web app is at:
 
 * http://ranking-countries.herokuapp.com
