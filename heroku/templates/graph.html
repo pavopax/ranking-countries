@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 {% block title %}-testing{% endblock %}
+
 {% block head %}
-<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.11.1.css" type="text/css" />
-<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.11.1.min.js"></script>
+<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.0.css" type="text/css" />
+<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
 {{ script | safe }}
-
 {% endblock %}<!-- block head -->
-
-
 
 {% block content %}
 <div class=page>
@@ -20,7 +18,6 @@
 
 <p><a href="{{ url_for('week1') }}">Click here for a fancier but static version of a similar plot.</a></p>
 <p><a href="https://pavopax.shinyapps.io/shiny-app-data-explorer/" target="_blank">Click here for a Shiny Data Explorer [beta]</a></p>
-
-{% endblock %}
+{% endblock %}<!-- block content -->
 
 
