@@ -91,8 +91,14 @@ More on some CPIA indicators:
 Resources
 ===============================================================================
 
+Fantastic tutorial for deploying python/flask apps to Heroku (a bit out of date though)
+  * http://blog.shea.io/lightweight-python-apps-with-flask-twitter-bootstrap-and-heroku/
+
 HTML Table styles in flask/pandas:
 * https://sarahleejane.github.io/learning/python/2015/08/09/simple-tables-in-webapps-using-flask-and-pandas-with-python.html
 * https://www.smashingmagazine.com/2008/08/top-10-css-table-designs/#8-rounded-corner
 
+
+Flask and forms
+  * http://www.tutorialspoint.com/flask/flask_wtf.htm
 
