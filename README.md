@@ -101,3 +101,4 @@ HTML Table styles in flask/pandas:
 
 Flask and forms
   * http://www.tutorialspoint.com/flask/flask_wtf.htm
+
