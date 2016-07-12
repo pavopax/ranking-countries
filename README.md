@@ -1,6 +1,5 @@
 Ranking the World's Countries (working)
 ===============================================================================
-
 The web app is at:
 
 * http://ranking-countries.herokuapp.com
