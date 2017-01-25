@@ -10,20 +10,20 @@
 
 <h2>Correlations</h2>
 <p>Below is a correlation plot of all 25 indicators that currently comprise our ranking. Cells in blue correspond to two indicators which are positively associated (correlated). That is, as one increases, the other increases also. Darker red cells show negative association: higher values of one variable are associated with lower values of the other.</p>
-<p>For example, ease of doing business (IC.BUS.EASE.XQ) is inversely correlated with population growth (SP.POP.GROW).</p>
+<p>For example, ease of doing business is inversely correlated with population growth.</p>
 <p><a href="{{ url_for('indicators')}}">Click here for a dictionary of these indicators.</a></p>
-<img src="{{ url_for('static', filename='img/indicator-correlations.png')}}" class="img-responsive" alt="Responsive image" width="800" style="border:1px solid black">
+<img src="{{ url_for('static', filename='img/3-corrs.png')}}" class="img-responsive" alt="Responsive image" width="800" style="border:1px solid black">
 
 
 
 <div id="pca">
 <h2>Which countries are unique?</h2>
-<p>The following plot suggests which countries are similar or different. We see that the United States and China are by themselves. Briefly, this means that there is no other country like the United States, and no other country like China.</p>
-<p>On the other hand, Greece and Portugal (near the top) are very close to each other, so this model suggests they are similar to each other, but different from Brazil, Indonesia, and India, who are themselves similar to each other.</p>
+<p>The following plot suggests which countries are similar or different. We see that the United States and China are by themselves. Briefly, this means that there is no other country like the United States, and no other country like China, based on this model.</p>
+<p>On the other hand, France and Canada (in the middle-left) are very close to each other, so this model suggests they are similar to each other, but different from Brazil, Indonesia, and India, who are themselves somewhat similar to each other.</p>
 <p>This is called "Principal Components Analysis" which summarizes for us in 2 dimensions the information we had in 25 dimensions (features). There are caveats, and this is just the starting point.</p>
 
-<img src="{{ url_for('static', filename='img/pca.png')}}" class="img-responsive" alt="Responsive image" width="800">
-The details are as follows: these 2 principal components from our "PCA" model explain about 32% of the variability between these countries, based on 25 features (the "indicators").
+<img src="{{ url_for('static', filename='img/ggpca1.png')}}" class="img-responsive" alt="Responsive image" width="800">
+The details are as follows: these 2 principal components from our "PCA" model explain about 40% of the variability between these countries, based on 25 features (the "indicators").
 </div>
 
 
